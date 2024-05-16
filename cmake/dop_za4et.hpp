@@ -96,9 +96,10 @@ public:
 	RectangleShape Get()
 	{
 		return shape;
-	}
+	};
 
 	int TYPE() { return type; };
 	double X() { return x; };
 	double Y() { return y; };
+	void setSpeed(int gspeed) { speed = gspeed; };
 };

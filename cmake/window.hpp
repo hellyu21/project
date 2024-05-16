@@ -31,7 +31,8 @@ private:
     Person person;
     int scx = 1600;
     int scy = 900;
-    double speed_creation = 5;
+    int speed_creation = 5;
+    int speed_zach = 140;
     enum  State { menu, choosecharacter, InGame, GameOver };//разные состояния игры
     State state;
     
@@ -247,8 +248,8 @@ public:
         float doptimer = 0;
         float zachtimer = 0;
         float persontimer = 0;
-        Dop dops[12];
-        Zat zacheti[12];
+        Dop dops[25];
+        Zat zacheti[15];
         int dopcount = 0;
         int zachcount = 0;
         bool gameover = 0;
@@ -270,7 +271,7 @@ public:
             zachtimer += dt;
 
             //возможный звук
-            if (time > 3 && doptimer > speed_creation && dopcount < 12) {
+            if (time > 3 && doptimer > speed_creation && dopcount < 25) {
                 Dop tmp;
                 tmp.Setup();
                 dops[dopcount] = tmp;
@@ -279,7 +280,7 @@ public:
                 doptimer = 0;
             }
 
-            if (time > 3 && zachtimer > speed_creation && zachcount < 12) {
+            if (time > 3 && zachtimer > speed_creation && zachcount < 15) {
                 Zat tmp;
                 tmp.Setup();
                 zacheti[zachcount] = tmp;
@@ -345,9 +346,42 @@ public:
             window.draw(person.Get());
             window.display();
 
-            if (time >10 && persontimer > 2) {
-                person.SpeedChange(10);
-                speed_creation -= 0.05;
+            if (time > 5 && persontimer > 8 && time < 20) {
+                person.SpeedChange(1);
+                speed_zach += 2;
+                for (int i = 0; i < zachcount; i++) {
+                    zacheti[i].setSpeed(speed_zach);
+                }
+                persontimer = 0;
+            }
+
+            if (time >= 20 && persontimer > 8 && time < 40) {
+                person.SpeedChange(3);
+                speed_zach += 3;
+                for (int i = 0; i < zachcount; i++) {
+                    zacheti[i].setSpeed(speed_zach);
+                }
+                speed_creation -= 0.001;
+                persontimer = 0;
+            }
+
+            if (time >= 40 && persontimer > 7 && time < 60) {
+                person.SpeedChange(3);
+                speed_zach += 3;
+                for (int i = 0; i < zachcount; i++) {
+                    zacheti[i].setSpeed(speed_zach);
+                }
+                speed_creation -= 0.005;
+                persontimer = 0;
+            }
+
+            if (time >= 60 && persontimer > 6) {
+                person.SpeedChange(3);
+                speed_zach += 3;
+                for (int i = 0; i < zachcount; i++) {
+                    zacheti[i].setSpeed(speed_zach);
+                }
+                speed_creation -= 0.005;
                 persontimer = 0;
             }
         }
