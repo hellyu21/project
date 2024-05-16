@@ -15,9 +15,11 @@ add_definitions(-DSFML_STATIC)		 # дефайны
 
 include_directories("ext/SFML/include/")	# добавляем директории
 include_directories("inc/")
+include_directories("sprites")
+
 link_directories("ext/SFML/lib/")	
 
-add_executable("${PROJECT_NAME}" main.cpp window.hpp person.hpp dop_za4et.hpp
+add_executable("${PROJECT_NAME}" main.cpp window.hpp person.hpp dop_za4et.hpp Record.txt
 		
 )
 											

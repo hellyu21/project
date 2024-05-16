@@ -4,6 +4,8 @@
 #include "person.hpp"
 #include "dop_za4et.hpp"
 using namespace sf;
+using namespace std;
+
 
 int TouchBorder(Person& obj) {
     double x = obj.X();
@@ -22,24 +24,181 @@ int TouchBorder(Person& obj) {
 }
 
 class Game {
+private:
+    //int maxScore;
+    //int currentScore = 0;
     RenderWindow window;
+    Person person;
     int scx = 1600;
     int scy = 900;
-    Person person;
     double speed_creation = 5;
+    enum  State { Menu, ChooseCharacter, InGame, GameOver };//разные состояния игры
+    State state;
+    
    
 public:
-    void Menu(){
-        //перекинуть создание окна из сетап
-    }
-
-    void MiniMenu() {
-
-    }
-    void Setup(){
+   
+    Game() {
+        srand(time(0));
+        state = Menu;
+        //maxScore = loadMaxScore(); //грузим максимальный рекорд из файла
         window.create(VideoMode(scx, scy), "Incredible adventure of a student!");
+    }
 
+    void run() {
+        while (window.isOpen()) {
+            processEvents();
+            update();
+            render();
+        }
+    }
+    void processEvents() {
+        Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == Event::Closed) {
+                window.close();
+            }
+        }
+    }
+    
+    void update() {//смена режима без закрытие окна
+        switch (state) {
+        case Menu:
+            Menu();
+            state = ChooseCharacter;
+            break;
+        case ChooseCharacter:
+            //проработать,чтобы выбор происходил и соотв.спрайты персонажу присваивались
+            state = InGame;
+            break;
+        case InGame:
+            Setup();
+            Life();
+            state = GameOver;
+            break;
+        case GameOver:
+            if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+                window.close();
+            }
+            break;
+        }
+    }
+   
+    void render() {//тут прорисовка всех режимов, почти готово, надо только координаты кнопок прикинуть
+        window.clear();
+        if (state == Menu) {
+            //фон
+            Texture backgroundTexture;
+            backgroundTexture.loadFromFile("backMenu.png");
+            Sprite background(backgroundTexture);
+            background.setScale(0.75, 0.75);
+            window.draw(background);
+
+           //кнопка старт (спрайт временный)
+            Texture startTexture;
+            startTexture.loadFromFile("start.png");
+            Sprite startButton(startTexture);
+            startButton.setPosition(100, 200);
+            window.draw(startButton);
+
+            //кнопка выход (спрайт временный)
+            Texture exitT;
+            exitT.loadFromFile("exit.png");
+            Sprite exitButton(exitT);
+            exitButton.setPosition(200, 300);
+            exitButton.setScale(0.5, 0.5);
+            window.draw(exitButton);
+
+            //добавить рекорды
+
+        }
+        else if (state == ChooseCharacter)
+        {
+            //фон
+            Texture backgroundTexture;
+            backgroundTexture.loadFromFile("backMenu.png");
+            Sprite background(backgroundTexture);
+            background.setScale(0.75, 0.75);
+            window.draw(background);
+
+            //персонажи для выбора
+            Texture chikat;
+            chikat.loadFromFile("CHIKAstraight.png");//Чика
+            Sprite chika(chikat);
+            chika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
+            chika.setScale(2, 2);
+            window.draw(chika);
+
+
+            Texture kikat;
+            kikat.loadFromFile("CHIKAleft.png");//Кика(файл поменять)
+            Sprite kika(kikat);
+            kika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
+            kika.setScale(2, 2);
+            window.draw(kika);
+        }
+        else if (state == InGame) {
+            //фон
+            Texture backgroundTexture;
+            Sprite background(backgroundTexture);
+            background.setScale(0.75, 0.75);
+            backgroundTexture.loadFromFile("backGAME.jpg");
+        }
+        else if (state == GameOver) {//добавить еще кнопку выхода?? +результаты игры (время в игре, количество допов, рекорд*)
+            //фон
+            Texture backgroundTexture;
+            Sprite background(backgroundTexture);
+            background.setScale(0.75, 0.75);
+            backgroundTexture.loadFromFile("backGO.jpg");
+            //кнопки надо?
+            //данные по игре добавить
+        }
+        window.display();
+    }
+    //все что дальше в комментах надо доработать
+
+    //void Menu() {
+    //   
+    //    if (Mouse::isButtonPressed(Mouse::Left)) {
+    //        Vector2i mousePos = Mouse::getPosition(window);
+
+    //        // Проверка нажатия на кнопку "Start"
+    //        if (mousePos.x >=  && mousePos.x <=  && mousePos.y >=  && mousePos.y <= ) {//циферки подогнать как установим кнопки в нужном месте
+    //            state = ChooseCharacter;
+    //        }
+
+    //        //проверку кнопки "выход"
+    //        if (mousePos.x >=  && mousePos.x <=  && mousePos.y >=  && mousePos.y <= ) {//циферки подогнать как установим кнопки в нужном месте
+    //            state = GameOver;
+    //        }
+    //    }
+    //}//доработать по координатам
+
+    //void ChooseCharacter() {//еще подредачу координаты
+    //    if (Mouse::isButtonPressed(Mouse::Left)) {
+    //        Vector2i mousePos = Mouse::getPosition(window);
+
+    //        //проверка выбора персонажа CHIKA
+    //        if (mousePos.x >=  && mousePos.x <=  && mousePos.y >=  && mousePos.y <= ) {
+    //            
+    //            state = InGame;
+    //           //установить спрайты этого персонажа
+    //        }
+
+    //        //проверка выбора персонажа KIKA
+    //        if (mousePos.x >=  && mousePos.x <=  && mousePos.y >=  && mousePos.y <= ) {
+    //            state = InGame;
+    //            //установить спрайты этого персонажа
+    //        }
+    //    }
+    //}//доработать
+
+    void Setup(){
+  
+      //  window.create(VideoMode(scx, scy), "Incredible adventure of a student!");
+     
         person.Setup(scx, scy);
+    
     }
 
     bool TouchDop(Person& person, Dop& dop){
@@ -192,9 +351,29 @@ public:
 
     }
 
-    void GameOver(){
+    //то что дальше в комментах--на  перспективу,мб все таки сделаем,пригодится
+   /* int loadMaxScore() {
+        int score = 0;
+        ifstream file("Record.txt");
+        if (file.is_open()) {
+            file >> score;
+            file.close();
+        }
+        return score;
+    }
+
+    void saveMaxScore(int score) {
+        ofstream file("Record.txt");
+        if (file.is_open()) {
+            file << score;
+            file.close();
+        }
+    }*/
+
+   /* void GameOver(){
         while (window.isOpen()) {
             window.draw(person.Get());
         }
-    }
+    }*/
+   
 };
