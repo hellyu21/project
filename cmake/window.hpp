@@ -32,7 +32,7 @@ private:
     int scx = 1600;
     int scy = 900;
     double speed_creation = 5;
-    enum  State { Menu, ChooseCharacter, InGame, GameOver };//разные состояния игры
+    enum  State { menu, choosecharacter, InGame, GameOver };//разные состояния игры
     State state;
     
    
@@ -40,7 +40,7 @@ public:
    
     Game() {
         srand(time(0));
-        state = Menu;
+        state = menu;
         //maxScore = loadMaxScore(); //грузим максимальный рекорд из файла
         window.create(VideoMode(scx, scy), "Incredible adventure of a student!");
     }
@@ -63,11 +63,11 @@ public:
     
     void update() {//смена режима без закрытие окна
         switch (state) {
-        case Menu:
+        case menu:
             Menu();
-            state = ChooseCharacter;
+            state = choosecharacter;
             break;
-        case ChooseCharacter:
+        case choosecharacter:
             //проработать,чтобы выбор происходил и соотв.спрайты персонажу присваивались
             state = InGame;
             break;
@@ -86,24 +86,24 @@ public:
    
     void render() {//тут прорисовка всех режимов, почти готово, надо только координаты кнопок прикинуть
         window.clear();
-        if (state == Menu) {
+        if (state == menu) {
             //фон
             Texture backgroundTexture;
-            backgroundTexture.loadFromFile("backMenu.png");
+            backgroundTexture.loadFromFile("sprites\\backMenu.png");
             Sprite background(backgroundTexture);
             background.setScale(0.75, 0.75);
             window.draw(background);
 
            //кнопка старт (спрайт временный)
             Texture startTexture;
-            startTexture.loadFromFile("start.png");
+            startTexture.loadFromFile("sprites\\start.png");
             Sprite startButton(startTexture);
             startButton.setPosition(100, 200);
             window.draw(startButton);
 
             //кнопка выход (спрайт временный)
             Texture exitT;
-            exitT.loadFromFile("exit.png");
+            exitT.loadFromFile("sprites\\exit.png");
             Sprite exitButton(exitT);
             exitButton.setPosition(200, 300);
             exitButton.setScale(0.5, 0.5);
@@ -112,18 +112,18 @@ public:
             //добавить рекорды
 
         }
-        else if (state == ChooseCharacter)
+        else if (state == choosecharacter)
         {
             //фон
             Texture backgroundTexture;
-            backgroundTexture.loadFromFile("backMenu.png");
+            backgroundTexture.loadFromFile("sprites\\backMenu.png");
             Sprite background(backgroundTexture);
             background.setScale(0.75, 0.75);
             window.draw(background);
 
             //персонажи для выбора
             Texture chikat;
-            chikat.loadFromFile("CHIKAstraight.png");//Чика
+            chikat.loadFromFile("sprites\\CHIKAstraight.png");//Чика
             Sprite chika(chikat);
             chika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
             chika.setScale(2, 2);
@@ -131,7 +131,7 @@ public:
 
 
             Texture kikat;
-            kikat.loadFromFile("CHIKAleft.png");//Кика(файл поменять)
+            kikat.loadFromFile("sprites\\CHIKAleft.png");//Кика(файл поменять)
             Sprite kika(kikat);
             kika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
             kika.setScale(2, 2);
@@ -142,14 +142,14 @@ public:
             Texture backgroundTexture;
             Sprite background(backgroundTexture);
             background.setScale(0.75, 0.75);
-            backgroundTexture.loadFromFile("backGAME.jpg");
+            backgroundTexture.loadFromFile("sprites\\backGAME.jpg");
         }
         else if (state == GameOver) {//добавить еще кнопку выхода?? +результаты игры (время в игре, количество допов, рекорд*)
             //фон
             Texture backgroundTexture;
             Sprite background(backgroundTexture);
             background.setScale(0.75, 0.75);
-            backgroundTexture.loadFromFile("backGO.jpg");
+            backgroundTexture.loadFromFile("sprites\\backGO.jpg");
             //кнопки надо?
             //данные по игре добавить
         }
@@ -157,22 +157,22 @@ public:
     }
     //все что дальше в комментах надо доработать
 
-    //void Menu() {
-    //   
-    //    if (Mouse::isButtonPressed(Mouse::Left)) {
-    //        Vector2i mousePos = Mouse::getPosition(window);
+    void Menu() {
+        sleep(milliseconds(5000));
+        //if (Mouse::isButtonPressed(Mouse::Left)) {
+        //    Vector2i mousePos = Mouse::getPosition(window);
 
-    //        // Проверка нажатия на кнопку "Start"
-    //        if (mousePos.x >=  && mousePos.x <=  && mousePos.y >=  && mousePos.y <= ) {//циферки подогнать как установим кнопки в нужном месте
-    //            state = ChooseCharacter;
-    //        }
+        //    // Проверка нажатия на кнопку "Start"
+        //    if (mousePos.x >= 0 && mousePos.x <= 0 && mousePos.y >= 0 && mousePos.y <= 0) {//циферки подогнать как установим кнопки в нужном месте
+        //        state = ChooseCharacter;
+        //    }
 
-    //        //проверку кнопки "выход"
-    //        if (mousePos.x >=  && mousePos.x <=  && mousePos.y >=  && mousePos.y <= ) {//циферки подогнать как установим кнопки в нужном месте
-    //            state = GameOver;
-    //        }
-    //    }
-    //}//доработать по координатам
+        //    //проверку кнопки "выход"
+        //    if (mousePos.x >= 0 && mousePos.x <= 0 && mousePos.y >= 0 && mousePos.y <= 0) {//циферки подогнать как установим кнопки в нужном месте
+        //        state = GameOver;
+        //    }
+        //}
+    };//доработать по координатам
 
     //void ChooseCharacter() {//еще подредачу координаты
     //    if (Mouse::isButtonPressed(Mouse::Left)) {
