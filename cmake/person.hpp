@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+using namespace sf;
 
 class Person{
 	double x;
@@ -7,7 +8,7 @@ class Person{
 	double speed = 150;
 	int hearts = 3;
 	int dops = 0;
-	sf::RectangleShape shape;
+	RectangleShape shape;
 public:
 	Person() = default;
 
@@ -15,7 +16,7 @@ public:
 		x = scx / 2;
 		y = scy / 2;
 		shape.setOrigin(15, 25);
-		shape.setSize(sf::Vector2f(30, 50));
+		shape.setSize(Vector2f(30, 50));
 		shape.setPosition(x, y);
 	}
 
@@ -41,10 +42,13 @@ public:
 	double X() { return x; };
 	double Y() { return y; };
 	int DOPS() { return dops; };
+	int Hearts() { return hearts; };
 
 	void plusDop() { dops++; }
 
-	sf::RectangleShape Get()
+	void Minusheart() { hearts--; };
+
+	RectangleShape Get()
 	{
 		return shape;
 	}

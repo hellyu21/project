@@ -3,16 +3,17 @@
 #include <iostream>
 #include "person.hpp"
 #include "dop_za4et.hpp"
+using namespace sf;
 
 int TouchBorder(Person& obj) {
     double x = obj.X();
     double y = obj.Y();
     
-    if (x + 15 > GetSystemMetrics(SM_CXSCREEN))
+    if (x + 15 > 1600)
         return 4; // right
     else if (x - 15 < 0)
         return 3; // left
-    else if (y + 25 > GetSystemMetrics(SM_CYSCREEN))
+    else if (y + 25 > 900)
         return 2; //down
     else if (y - 25 < 0)
         return 1; //up
@@ -21,15 +22,22 @@ int TouchBorder(Person& obj) {
 }
 
 class Game {
-    sf::RenderWindow window;
+    RenderWindow window;
     int scx = 1600;
     int scy = 900;
     Person person;
     double speed_creation = 5;
    
 public:
+    void Menu(){
+        //перекинуть создание окна из сетап
+    }
+
+    void MiniMenu() {
+
+    }
     void Setup(){
-        window.create(sf::VideoMode(scx, scy), "Incredible adventure of a student!");
+        window.create(VideoMode(scx, scy), "Incredible adventure of a student!");
 
         person.Setup(scx, scy);
     }
@@ -52,45 +60,81 @@ public:
             return false;
     };
 
-    void Life() {
-        sf::Clock clock;
-        float time = 0;
-        float timer = 0;
-        Dop dops[12];
-        int dopcount = 0;
+    bool TouchZat(Person& person, Zat& zach) {
+        double xp = person.X();
+        double yp = person.Y();
+        double xz = zach.X();
+        double yz = zach.Y();
+        int type = zach.TYPE();
 
-        while (window.isOpen())
+        if (type == 1 && (xp - 15 < xz) && (xz < xp + 15) && (yp - 25 < yz+20) && (yz + 20 < yp + 25))
+            return true;
+        else if (type == 2 && (xp - 15 < xz) && (xz < xp + 15) && (yp - 25 < yz - 20) && (yz - 20 < yp + 25))
+            return true;
+        else if (type == 3 && (xp - 15 < xz + 20) && (xz + 20 < xp + 15) && (yp - 25 < yz) && (yz < yp + 25))
+            return true;
+        else if (type == 4 && (xp - 15 < xz - 20) && (xz - 20 < xp + 15) && (yp - 25 < yz) && (yz < yp + 25))
+            return true;
+        else
+            return false;
+    };
+
+    void Life() {
+        Clock clock;
+        float time = 0;
+        float doptimer = 0;
+        float zachtimer = 0;
+        float persontimer = 0;
+        Dop dops[12];
+        Zat zacheti[12];
+        int dopcount = 0;
+        int zachcount = 0;
+        bool gameover = 0;
+
+        while (window.isOpen() && !gameover)
         {
-            sf::Event event;
+            Event event;
             while (window.pollEvent(event))
             {
-                if (event.type == sf::Event::Closed)
+                if (event.type == Event::Closed)
                     window.close();
             }
 
             float dt = clock.getElapsedTime().asSeconds();
             clock.restart();
             time += dt;
-            timer += dt;
+            doptimer += dt;
+            persontimer += dt;
+            zachtimer += dt;
 
-            if (time > 3 && int(speed_creation*10) == int(timer*10) && dopcount < 12) {
+            //возможный звук
+            if (time > 3 && doptimer > speed_creation && dopcount < 12) {
                 Dop tmp;
                 tmp.Setup();
                 dops[dopcount] = tmp;
                 tmp.~Dop();
                 dopcount++;
-                timer = 0;
+                doptimer = 0;
+            }
+
+            if (time > 3 && zachtimer > speed_creation && zachcount < 12) {
+                Zat tmp;
+                tmp.Setup();
+                zacheti[zachcount] = tmp;
+                tmp.~Zat();
+                zachcount++;
+                zachtimer = 0;
             }
 
             int touch = TouchBorder(person);
             if (!touch) {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+                if (Keyboard::isKeyPressed(Keyboard::W))
                     person.Move(1, dt);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+                if (Keyboard::isKeyPressed(Keyboard::S))
                     person.Move(2, dt);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+                if (Keyboard::isKeyPressed(Keyboard::A))
                     person.Move(3, dt);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+                if (Keyboard::isKeyPressed(Keyboard::D))
                     person.Move(4, dt);
             }
             else if (touch == 1)
@@ -102,8 +146,30 @@ public:
             else if (touch == 4)
                 person.Move(3, dt);
 
-
             window.clear();
+            for (int i = 0; i < zachcount; i++) {
+                int typezat = zacheti[i].TYPE();
+                if ((typezat == 1 && zacheti[i].Y() - 20 > 900) || (typezat == 2 && zacheti[i].Y() + 20 < 0) || (typezat ==3 && zacheti[i].X() - 20 > 1600) || (typezat == 4 && zacheti[i].X() + 20 < 0)) {
+                    zacheti[i] = zacheti[zachcount - 1];
+                    typezat = zacheti[zachcount - 1].TYPE();
+                    zacheti[zachcount - 1].~Zat();
+                    zachcount--;
+                }
+                if (TouchZat(person, zacheti[i])) {
+                    zacheti[i] = zacheti[zachcount - 1];
+                    typezat = zacheti[zachcount - 1].TYPE();
+                    zacheti[zachcount - 1].~Zat();
+                    zachcount--;
+                    person.Minusheart();
+                    if (person.Hearts() == 0) {
+                        window.clear();
+                        gameover = 1;
+                    }
+                }
+                zacheti[i].Move(typezat, dt);
+                window.draw(zacheti[i].Get());
+            }
+
             for (int i = 0; i < dopcount; i++) {
                 if (TouchDop(person, dops[i])) {
                     dops[i] = dops[dopcount-1];
@@ -114,15 +180,21 @@ public:
                 dops[i].Move(time);
                 window.draw(dops[i].Get());
             }
-            std::cout << person.DOPS() << std::endl;
             window.draw(person.Get());
             window.display();
 
-            if (time > 20 && int(time) % 2 == 0) {
-                person.SpeedChange(0.05);
-                speed_creation -= 0.01;
+            if (time >10 && persontimer > 2) {
+                person.SpeedChange(10);
+                speed_creation -= 0.05;
+                persontimer = 0;
             }
         }
 
+    }
+
+    void GameOver(){
+        while (window.isOpen()) {
+            window.draw(person.Get());
+        }
     }
 };
