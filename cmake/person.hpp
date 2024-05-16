@@ -26,10 +26,10 @@ public:
 		y = scy / 2;
 
 		//тут все для CHIKA,исправлю,чтобы отдельно были персонажи
-		textureUp.loadFromFile("sprites\\CHIKAstraight.jpg");
-		textureDown.loadFromFile("sprites\\CHIKAback.jpg");
-		textureLeft.loadFromFile("sprites\\CHIKAleft.jpg");
-		textureRight.loadFromFile("sprites\\CHIKAright.jpg");
+		textureUp.loadFromFile("sprites\\CHIKAstraight.png");
+		textureDown.loadFromFile("sprites\\CHIKAback.png");
+		textureLeft.loadFromFile("sprites\\CHIKAleft.png");
+		textureRight.loadFromFile("sprites\\CHIKAright.png");
 		
 		sprite.setTexture(textureUp);
 		sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y);

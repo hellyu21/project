@@ -158,7 +158,10 @@ public:
     //все что дальше в комментах надо доработать
 
     void Menu() {
-        sleep(milliseconds(5000));
+        while (!Keyboard::isKeyPressed(Keyboard::W)) {
+            if (Keyboard::isKeyPressed(Keyboard::W))
+                state = choosecharacter;
+        }
         //if (Mouse::isButtonPressed(Mouse::Left)) {
         //    Vector2i mousePos = Mouse::getPosition(window);
 
