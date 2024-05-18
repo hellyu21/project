@@ -17,7 +17,10 @@ class Person{
 	Texture textureRight;
 	Sprite sprite;
 
-	RectangleShape shape;
+	//RectangleShape shape;
+
+	enum Character { CHIKA, KIKA };
+	Character selectedCharacter;
 public:
 	Person() = default;
 
@@ -25,12 +28,21 @@ public:
 		x = scx / 2;
 		y = scy / 2;
 
-		//тут все для CHIKA,исправлю,чтобы отдельно были персонажи
-		textureUp.loadFromFile("sprites\\CHIKAstraight.png");
-		textureDown.loadFromFile("sprites\\CHIKAback.png");
-		textureLeft.loadFromFile("sprites\\CHIKAleft.png");
-		textureRight.loadFromFile("sprites\\CHIKAright.png");
-		
+		switch (selectedCharacter) {
+		case CHIKA:
+			textureUp.loadFromFile("sprites\\CHIKAstraight.png");
+			textureDown.loadFromFile("sprites\\CHIKAback.png");
+			textureLeft.loadFromFile("sprites\\CHIKAleft.png");
+			textureRight.loadFromFile("sprites\\CHIKAright.png");
+			break;
+		case KIKA:
+			textureUp.loadFromFile("sprites\\KIKAstraight.png");
+			textureDown.loadFromFile("sprites\\KIKAback.png");
+			textureLeft.loadFromFile("sprites\\KIKAleft.png");
+			textureRight.loadFromFile("sprites\\KIKAright.png");
+			break;
+		}
+
 		sprite.setTexture(textureUp);
 		sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y);
 		sprite.setPosition(x, y);

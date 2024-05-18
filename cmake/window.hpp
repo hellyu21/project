@@ -25,32 +25,28 @@ int TouchBorder(Person& obj) {
 
 class Game {
 private:
-    //int maxScore;
-    //int currentScore = 0;
     RenderWindow window;
     Person person;
     int scx = 1600;
     int scy = 900;
     int speed_creation = 5;
     int speed_zach = 140;
-    enum  State { menu, choosecharacter, InGame, GameOver };//разные состояния игры
+    enum  State { menu, choosecharacter, InGame, gameover1, gameover2 };//разные состояния игры
     State state;
     
    
 public:
    
-    Game() {
+    Game() { 
         srand(time(0));
-        state = menu;
-        //maxScore = loadMaxScore(); //грузим максимальный рекорд из файла
         window.create(VideoMode(scx, scy), "Incredible adventure of a student!");
+        state = menu;
     }
 
     void run() {
         while (window.isOpen()) {
             processEvents();
             update();
-            render();
         }
     }
     void processEvents() {
@@ -66,143 +62,203 @@ public:
         switch (state) {
         case menu:
             Menu();
-            state = choosecharacter;
             break;
         case choosecharacter:
+            ChooseCharacter();
             //проработать,чтобы выбор происходил и соотв.спрайты персонажу присваивались
-            state = InGame;
             break;
         case InGame:
-            Setup();
-            Life();
-            state = GameOver;
+            game();//фон
+            Setup();//персонаж
+            Life();//игра
+            state = gameover1;
             break;
-        case GameOver:
-            if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-                window.close();
-            }
+        case gameover1:
+            GameOver();//рестарт/выход
+            break;
+        case gameover2:
+            window.close();
             break;
         }
     }
-   
-    void render() {//тут прорисовка всех режимов, почти готово, надо только координаты кнопок прикинуть
-        window.clear();
-        if (state == menu) {
-            //фон
-            Texture backgroundTexture;
-            backgroundTexture.loadFromFile("sprites\\backMenu.png");
-            Sprite background(backgroundTexture);
-            background.setScale(0.75, 0.75);
-            window.draw(background);
-
-           //кнопка старт (спрайт временный)
-            Texture startTexture;
-            startTexture.loadFromFile("sprites\\start.png");
-            Sprite startButton(startTexture);
-            startButton.setPosition(100, 200);
-            window.draw(startButton);
-
-            //кнопка выход (спрайт временный)
-            Texture exitT;
-            exitT.loadFromFile("sprites\\exit.png");
-            Sprite exitButton(exitT);
-            exitButton.setPosition(200, 300);
-            exitButton.setScale(0.5, 0.5);
-            window.draw(exitButton);
-
-            //добавить рекорды
-
-        }
-        else if (state == choosecharacter)
-        {
-            //фон
-            Texture backgroundTexture;
-            backgroundTexture.loadFromFile("sprites\\backMenu.png");
-            Sprite background(backgroundTexture);
-            background.setScale(0.75, 0.75);
-            window.draw(background);
-
-            //персонажи для выбора
-            Texture chikat;
-            chikat.loadFromFile("sprites\\CHIKAstraight.png");//Чика
-            Sprite chika(chikat);
-            chika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
-            chika.setScale(2, 2);
-            window.draw(chika);
-
-
-            Texture kikat;
-            kikat.loadFromFile("sprites\\CHIKAleft.png");//Кика(файл поменять)
-            Sprite kika(kikat);
-            kika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
-            kika.setScale(2, 2);
-            window.draw(kika);
-        }
-        else if (state == InGame) {
-            //фон
-            Texture backgroundTexture;
-            Sprite background(backgroundTexture);
-            background.setScale(0.75, 0.75);
-            backgroundTexture.loadFromFile("sprites\\backGAME.jpg");
-        }
-        else if (state == GameOver) {//добавить еще кнопку выхода?? +результаты игры (время в игре, количество допов, рекорд*)
-            //фон
-            Texture backgroundTexture;
-            Sprite background(backgroundTexture);
-            background.setScale(0.75, 0.75);
-            backgroundTexture.loadFromFile("sprites\\backGO.jpg");
-            //кнопки надо?
-            //данные по игре добавить
-        }
-        window.display();
-    }
-    //все что дальше в комментах надо доработать
 
     void Menu() {
-        while (!Keyboard::isKeyPressed(Keyboard::W)) {
-            if (Keyboard::isKeyPressed(Keyboard::W))
+        //фон
+        Texture backgroundMenuTexture;
+        backgroundMenuTexture.loadFromFile("sprites\\backMenu.png");
+        Sprite background(backgroundMenuTexture);
+        background.setScale(0.75f, 0.75f);
+        window.draw(background);
+
+        //кнопка старт (спрайт временный)
+        Texture startTexture;
+        startTexture.loadFromFile("sprites\\start.png");
+        Sprite startButton(startTexture);
+        startButton.setPosition(100, 200);
+        window.draw(startButton);
+
+        //кнопка выход (спрайт временный)
+        Texture exitT;
+        exitT.loadFromFile("sprites\\exit.png");
+        Sprite exitButton(exitT);
+        exitButton.setPosition(200, 300);
+        exitButton.setScale(0.5, 0.5);
+        window.draw(exitButton);
+
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            Vector2i mousePos = Mouse::getPosition(window);
+
+            //проверка кнопки "старт"
+            if (startButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                 state = choosecharacter;
+            }
+
+            //проверка кнопки "выход"
+            if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                state = gameover2;
+            }
         }
-        //if (Mouse::isButtonPressed(Mouse::Left)) {
-        //    Vector2i mousePos = Mouse::getPosition(window);
+        //временно,пока не работает как надо
+        if (Keyboard::isKeyPressed(Keyboard::Key::Space)) {
+            state = InGame;
+        }
+        window.display();
+    };
 
-        //    // Проверка нажатия на кнопку "Start"
-        //    if (mousePos.x >= 0 && mousePos.x <= 0 && mousePos.y >= 0 && mousePos.y <= 0) {//циферки подогнать как установим кнопки в нужном месте
-        //        state = ChooseCharacter;
-        //    }
+    void ChooseCharacter() {
+          //фон
+           Texture backgroundCCTexture;
+           backgroundCCTexture.loadFromFile("sprites\\backMenu.png");
+           Sprite ccback(backgroundCCTexture);
+           ccback.setScale(0.75, 0.75);
+           window.draw(ccback);
 
-        //    //проверку кнопки "выход"
-        //    if (mousePos.x >= 0 && mousePos.x <= 0 && mousePos.y >= 0 && mousePos.y <= 0) {//циферки подогнать как установим кнопки в нужном месте
-        //        state = GameOver;
-        //    }
-        //}
-    };//доработать по координатам
+           //персонажи для выбора
+           Texture chikat;
+           chikat.loadFromFile("sprites\\CHIKAstraight.png");//Чика
+           Sprite chika(chikat);
+           chika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
+           chika.setScale(2, 2);
+           window.draw(chika);
 
-    //void ChooseCharacter() {//еще подредачу координаты
-    //    if (Mouse::isButtonPressed(Mouse::Left)) {
-    //        Vector2i mousePos = Mouse::getPosition(window);
 
-    //        //проверка выбора персонажа CHIKA
-    //        if (mousePos.x >=  && mousePos.x <=  && mousePos.y >=  && mousePos.y <= ) {
-    //            
-    //            state = InGame;
-    //           //установить спрайты этого персонажа
-    //        }
+           Texture kikat;
+           kikat.loadFromFile("sprites\\CHIKAleft.png");//Кика(файл поменять)
+           Sprite kika(kikat);
+           kika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
+           kika.setScale(2, 2);
+           window.draw(kika);
 
-    //        //проверка выбора персонажа KIKA
-    //        if (mousePos.x >=  && mousePos.x <=  && mousePos.y >=  && mousePos.y <= ) {
-    //            state = InGame;
-    //            //установить спрайты этого персонажа
-    //        }
-    //    }
-    //}//доработать
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            Vector2i mousePos = Mouse::getPosition(window);
 
-    void Setup(){
-  
-      //  window.create(VideoMode(scx, scy), "Incredible adventure of a student!");
-     
+            //проверка выбора персонажа CHIKA
+            if (chika.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                selectedCharacter = CHIKA;
+                state = InGame;
+            }
+
+            //проверка выбора персонажа KIKA
+            if (kika.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                selectedCharacter = KIKA;
+                state = InGame;
+            }
+        }
+        window.display();
+    }//доработать,персонажи не выбираются
+    void game() {
+        //фон
+        Texture backgroundGAMETexture;
+        backgroundGAMETexture.loadFromFile("sprites\\backGAME.jpg");
+        Sprite background(backgroundGAMETexture);
+        background.setScale(0.75, 0.75);
+
+        //отрисовка сердец
+        Texture heart3;
+        heart3.loadFromFile("sprites\\heartFull.png");
+        Sprite fullheart(heart3);
+
+        Texture heart2;
+        heart2.loadFromFile("sprites\\2hearts.png");
+        Sprite twoheart(heart2);
+
+        Texture heart1;
+        heart1.loadFromFile("sprites\\1heart.png");
+        Sprite oneheart(heart1);
+
+        switch (hearts) {
+        case 3:
+            fullheart.setPosition(200, 300);
+            fullheart.setScale(0.5, 0.5);
+            window.draw(fullheart);
+            break;
+        case 2:
+            twoheart.setPosition(200, 300);
+            twoheart.setScale(0.5, 0.5);
+            window.draw(twoheart);
+            break;
+        case 1:
+            oneheart.setPosition(200, 300);
+            oneheart.setScale(0.5, 0.5);
+            window.draw(oneheart);
+            break;
+        }
+
+        //кол-во допов в углу надо еще
+        Texture dooop;
+        dooop.loadFromFile("sprites\\dop.jpg");
+        Sprite dooop1(dooop);
+        dooop1.setPosition(100, 300);
+        dooop1.setScale(0.5, 0.5);
+        window.draw(dooop1);
+        //и само количество надо еще вывести на экран,но с этим проблема
+
+        window.display();
+    }
+    void GameOver() {
+        //фон
+        Texture backgroundTexture;
+        backgroundTexture.loadFromFile("sprites\\backGO.jpg");
+        Sprite background(backgroundTexture);
+        background.setScale(0.75, 0.75);
+
+        Text dopsText;
+        Text timeText;
+        Font font;
+        font.loadFromFile("font\\arial.ttf");
+
+        dopsText.setFont(font);
+        timeText.setFont(font);
+        dopsText.setCharacterSize(30);
+        timeText.setCharacterSize(30);
+        dopsText.setFillColor(Color::Red);
+        timeText.setFillColor(Color::Red);
+
+        int dops = person.DOPS();
+        string dopsString = "You have " + to_string(dops) + " dops";
+        dopsText.setString(dopsString);
+        dopsText.setPosition(100, 100);
+
+        string dopsString = "Time in game: " + to_string(time);
+        dopsText.setString(dopsString);
+        dopsText.setPosition(100, 100);
+       
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            Vector2i mousePos = Mouse::getPosition(window);
+
+            if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                state = gameover2;
+            }
+            if (RestartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                state = choosecharacter;
+            }
+        }
+        window.draw(background);
+        window.draw(dopsText);
+        window.display();
+    }
+    void Setup(){     
         person.Setup(scx, scy);
-    
     }
 
     bool TouchDop(Person& person, Dop& dop){
@@ -252,9 +308,9 @@ public:
         Zat zacheti[15];
         int dopcount = 0;
         int zachcount = 0;
-        bool gameover = 0;
+        bool Gameover = 0;
 
-        while (window.isOpen() && !gameover)
+        while (window.isOpen() && !Gameover)
         {
             Event event;
             while (window.pollEvent(event))
@@ -270,7 +326,7 @@ public:
             persontimer += dt;
             zachtimer += dt;
 
-            //возможный звук
+            //возможный звук "настало время выдавать допы"
             if (time > 3 && doptimer > speed_creation && dopcount < 25) {
                 Dop tmp;
                 tmp.Setup();
@@ -326,7 +382,7 @@ public:
                     person.Minusheart();
                     if (person.Hearts() == 0) {
                         window.clear();
-                        gameover = 1;
+                        Gameover = 1;
                     }
                 }
                 zacheti[i].Move(typezat, dt);
@@ -387,30 +443,4 @@ public:
         }
 
     }
-
-    //то что дальше в комментах--на  перспективу,мб все таки сделаем,пригодится
-   /* int loadMaxScore() {
-        int score = 0;
-        ifstream file("Record.txt");
-        if (file.is_open()) {
-            file >> score;
-            file.close();
-        }
-        return score;
-    }
-
-    void saveMaxScore(int score) {
-        ofstream file("Record.txt");
-        if (file.is_open()) {
-            file << score;
-            file.close();
-        }
-    }*/
-
-   /* void GameOver(){
-        while (window.isOpen()) {
-            window.draw(person.Get());
-        }
-    }*/
-   
 };
