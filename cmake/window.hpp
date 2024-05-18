@@ -3,7 +3,6 @@
 #include <iostream>
 #include "person.hpp"
 #include "dop_za4et.hpp"
-#include "person.hpp"
 using namespace sf;
 using namespace std;
 
@@ -29,6 +28,7 @@ class Game {
 private:
     RenderWindow window;
     Person person;
+    float Time = 0;
     int scx = 1600;
     int scy = 900;
     int speed_creation = 5;
@@ -103,8 +103,7 @@ public:
         Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
         Sprite exitButton(exitT);
-        exitButton.setPosition(200, 300);
-        exitButton.setScale(0.5, 0.5);
+        exitButton.setPosition(120, 500);
         window.draw(exitButton);
 
         if (Mouse::isButtonPressed(Mouse::Left)) {
@@ -126,7 +125,8 @@ public:
         }
         window.display();
     };
-    Character selectedCharacter = person.typecharacter();//не хочет:(
+
+
     void ChooseCharacter() {
           //фон
            Texture backgroundCCTexture;
@@ -140,15 +140,15 @@ public:
            chikat.loadFromFile("sprites\\CHIKAstraight.png");//Чика
            Sprite chika(chikat);
            chika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
-           chika.setScale(2, 2);
+           chika.setScale(5, 5);
            window.draw(chika);
 
 
            Texture kikat;
            kikat.loadFromFile("sprites\\KIKAstraight.png");//Кика
            Sprite kika(kikat);
-           kika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
-           kika.setScale(2, 2);
+           kika.setPosition(750, 250);//ЕЩЕ ИЗМЕНИМ
+           kika.setScale(5, 5);
            window.draw(kika);
 
         if (Mouse::isButtonPressed(Mouse::Left)) {
@@ -156,13 +156,13 @@ public:
 
             //проверка выбора персонажа CHIKA
             if (chika.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                selectedCharacter = CHIKA;
+                person.typeCharacter(1);
                 state = InGame;
             }
 
             //проверка выбора персонажа KIKA
             if (kika.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                selectedCharacter = KIKA;
+                person.typeCharacter(2);
                 state = InGame;
             }
         }
@@ -274,7 +274,7 @@ public:
         timeText.setFont(font);
         timeText.setCharacterSize(30);
         timeText.setFillColor(Color::Red);
-        string timeString = "Time in game: " + to_string(time);//запутався в таймерах,сюда надо общее время в игре,в общем
+        string timeString = "Time in game: " + to_string(Time);//запутався в таймерах,сюда надо общее время в игре,в общем
         timeText.setString(timeString);
         timeText.setPosition(100, 100);
        
@@ -336,7 +336,6 @@ public:
 
     void Life() {
         Clock clock;
-        float time = 0;
         float doptimer = 0;
         float zachtimer = 0;
         float persontimer = 0;
@@ -357,13 +356,13 @@ public:
 
             float dt = clock.getElapsedTime().asSeconds();
             clock.restart();
-            time += dt;
+            Time += dt;
             doptimer += dt;
             persontimer += dt;
             zachtimer += dt;
 
             //возможный звук "настало время выдавать допы"
-            if (time > 3 && doptimer > speed_creation && dopcount < 25) {
+            if (Time > 3 && doptimer > speed_creation && dopcount < 25) {
                 Dop tmp;
                 tmp.Setup();
                 dops[dopcount] = tmp;
@@ -372,7 +371,7 @@ public:
                 doptimer = 0;
             }
 
-            if (time > 3 && zachtimer > speed_creation && zachcount < 15) {
+            if (Time > 3 && zachtimer > speed_creation && zachcount < 15) {
                 Zat tmp;
                 tmp.Setup();
                 zacheti[zachcount] = tmp;
@@ -432,13 +431,13 @@ public:
                     dopcount--;
                     person.plusDop();
                 }
-                dops[i].Move(time);
+                dops[i].Move(Time);
                 window.draw(dops[i].Get());
             }
             window.draw(person.Get());
             window.display();
 
-            if (time > 5 && persontimer > 8 && time < 20) {
+            if (Time > 5 && persontimer > 8 && Time < 20) {
                 person.SpeedChange(1);
                 speed_zach += 2;
                 for (int i = 0; i < zachcount; i++) {
@@ -447,7 +446,7 @@ public:
                 persontimer = 0;
             }
 
-            if (time >= 20 && persontimer > 8 && time < 40) {
+            if (Time >= 20 && persontimer > 8 && Time < 40) {
                 person.SpeedChange(3);
                 speed_zach += 3;
                 for (int i = 0; i < zachcount; i++) {
@@ -457,7 +456,7 @@ public:
                 persontimer = 0;
             }
 
-            if (time >= 40 && persontimer > 7 && time < 60) {
+            if (Time >= 40 && persontimer > 7 && Time < 60) {
                 person.SpeedChange(3);
                 speed_zach += 3;
                 for (int i = 0; i < zachcount; i++) {
@@ -467,7 +466,7 @@ public:
                 persontimer = 0;
             }
 
-            if (time >= 60 && persontimer > 6) {
+            if (Time >= 60 && persontimer > 6) {
                 person.SpeedChange(3);
                 speed_zach += 3;
                 for (int i = 0; i < zachcount; i++) {

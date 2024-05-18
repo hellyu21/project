@@ -44,6 +44,7 @@ public:
 		sprite.setTexture(textureUp);
 		sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y);
 		sprite.setPosition(x, y);
+		sprite.setScale(2, 2);
 		/*shape.setOrigin(15, 25);
 		shape.setSize(Vector2f(30, 50));
 		shape.setPosition(x, y);*/
@@ -83,15 +84,19 @@ public:
 	double X() { return x; };
 	double Y() { return y; };
 
-	Character typecharacter() {
-		return selectedCharacter;
-	}
 	//не очень нужно
 	int DOPS() { return dops; };
 	int Hearts() { return hearts; };
 
 	void plusDop() { dops++; }
 	void Minusheart() { hearts--; };
+
+	void typeCharacter(int i) {
+		if (i == 1)
+			selectedCharacter = CHIKA;
+		if (i == 2)
+			selectedCharacter = KIKA;
+	}
 
 	Sprite Get()
 	{
