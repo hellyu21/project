@@ -17,8 +17,6 @@ class Person{
 	Texture textureRight;
 	Sprite sprite;
 
-	//RectangleShape shape;
-
 	enum Character { CHIKA, KIKA };
 	Character selectedCharacter;
 public:
@@ -52,7 +50,7 @@ public:
 	}
 
 	~Person() = default;
-
+	
 	void SpeedChange(int delta) {
 		speed += delta;
 	}
@@ -84,7 +82,10 @@ public:
 	//геттеры и сеттеры
 	double X() { return x; };
 	double Y() { return y; };
-	
+
+	Character typecharacter() {
+		return selectedCharacter;
+	}
 	//не очень нужно
 	int DOPS() { return dops; };
 	int Hearts() { return hearts; };

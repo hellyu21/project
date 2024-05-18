@@ -3,9 +3,11 @@
 #include <iostream>
 #include "person.hpp"
 #include "dop_za4et.hpp"
+#include "person.hpp"
 using namespace sf;
 using namespace std;
 
+//ошибки в пунктах choosecharacter(),gameover()!!!!!!!!
 
 int TouchBorder(Person& obj) {
     double x = obj.X();
@@ -99,7 +101,7 @@ public:
 
         //кнопка выход (спрайт временный)
         Texture exitT;
-        exitT.loadFromFile("sprites\\exit.png");
+        exitT.loadFromFile("sprites\\QUIT.png");
         Sprite exitButton(exitT);
         exitButton.setPosition(200, 300);
         exitButton.setScale(0.5, 0.5);
@@ -124,7 +126,7 @@ public:
         }
         window.display();
     };
-
+    Character selectedCharacter = person.typecharacter();//не хочет:(
     void ChooseCharacter() {
           //фон
            Texture backgroundCCTexture;
@@ -143,7 +145,7 @@ public:
 
 
            Texture kikat;
-           kikat.loadFromFile("sprites\\CHIKAleft.png");//Кика(файл поменять)
+           kikat.loadFromFile("sprites\\KIKAstraight.png");//Кика
            Sprite kika(kikat);
            kika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
            kika.setScale(2, 2);
@@ -169,7 +171,7 @@ public:
     void game() {
         //фон
         Texture backgroundGAMETexture;
-        backgroundGAMETexture.loadFromFile("sprites\\backGAME.jpg");
+        backgroundGAMETexture.loadFromFile("sprites\\backGAME.png");
         Sprite background(backgroundGAMETexture);
         background.setScale(0.75, 0.75);
 
@@ -186,6 +188,7 @@ public:
         heart1.loadFromFile("sprites\\1heart.png");
         Sprite oneheart(heart1);
 
+        int hearts = person.Hearts();
         switch (hearts) {
         case 3:
             fullheart.setPosition(200, 300);
@@ -211,7 +214,17 @@ public:
         dooop1.setPosition(100, 300);
         dooop1.setScale(0.5, 0.5);
         window.draw(dooop1);
-        //и само количество надо еще вывести на экран,но с этим проблема
+        Text dopsText;
+        Font font;
+        font.loadFromFile("font\\arial.ttf");
+        dopsText.setFont(font);
+        dopsText.setCharacterSize(30);
+        dopsText.setFillColor(Color::Red);
+        int dops = person.DOPS();
+        string dopsString = "You have " + to_string(dops) + " dops";
+        dopsText.setString(dopsString);
+        dopsText.setPosition(100, 100);
+        window.draw(dopsText);
 
         window.display();
     }
@@ -222,26 +235,48 @@ public:
         Sprite background(backgroundTexture);
         background.setScale(0.75, 0.75);
 
+        //кнопка старт
+        Texture startTexture;
+        startTexture.loadFromFile("sprites\\start.png");
+        Sprite startButton(startTexture);
+        startButton.setPosition(100, 200);
+        window.draw(startButton);
+
+        //кнопка выход
+        Texture exitT;
+        exitT.loadFromFile("sprites\\QUIT.png");
+        Sprite exitButton(exitT);
+        exitButton.setPosition(200, 400);
+        exitButton.setScale(0.5, 0.5);
+        window.draw(exitButton);
+
+        //кнопка РЕСТАРТ
+        Texture restartTexture;
+        restartTexture.loadFromFile("sprites\\RESUME.png");//перерисовать кнопку,чтоб рестарт осуществить.Если мы продолжим игру,там надо случай игры переписать
+        Sprite restartButton(restartTexture);
+        restartButton.setPosition(100, 600);
+        window.draw(restartButton);
+
         Text dopsText;
         Text timeText;
         Font font;
         font.loadFromFile("font\\arial.ttf");
 
         dopsText.setFont(font);
-        timeText.setFont(font);
         dopsText.setCharacterSize(30);
-        timeText.setCharacterSize(30);
         dopsText.setFillColor(Color::Red);
-        timeText.setFillColor(Color::Red);
 
         int dops = person.DOPS();
         string dopsString = "You have " + to_string(dops) + " dops";
         dopsText.setString(dopsString);
         dopsText.setPosition(100, 100);
 
-        string dopsString = "Time in game: " + to_string(time);
-        dopsText.setString(dopsString);
-        dopsText.setPosition(100, 100);
+        timeText.setFont(font);
+        timeText.setCharacterSize(30);
+        timeText.setFillColor(Color::Red);
+        string timeString = "Time in game: " + to_string(time);//запутався в таймерах,сюда надо общее время в игре,в общем
+        timeText.setString(timeString);
+        timeText.setPosition(100, 100);
        
         if (Mouse::isButtonPressed(Mouse::Left)) {
             Vector2i mousePos = Mouse::getPosition(window);
@@ -249,12 +284,13 @@ public:
             if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                 state = gameover2;
             }
-            if (RestartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                 state = choosecharacter;
             }
         }
         window.draw(background);
         window.draw(dopsText);
+        window.draw(timeText);
         window.display();
     }
     void Setup(){     

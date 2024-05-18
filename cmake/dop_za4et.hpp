@@ -7,6 +7,9 @@ class Dop {
 	double y;
 	double time;
 	CircleShape shape;
+
+	
+
 public:
 	Dop() = default;
 
@@ -48,37 +51,49 @@ class Zat {
 	double y = 0;
 	int type;
 	int speed = 140;
-	RectangleShape shape;
+
+	//для зачета
+	Texture textureUp;
+	Texture textureDown;
+	Texture textureLeft;
+	Texture textureRight;
+
+	Sprite sprite;
 public:
 	Zat() = default;
 
 	~Zat() = default;
 
 	void Setup() {
+		textureUp.loadFromFile("sprites\\ZACHup.png");
+		textureDown.loadFromFile("sprites\\ZACHdown.png");
+		textureLeft.loadFromFile("sprites\\ZACHleft.png");
+		textureRight.loadFromFile("sprites\\ZACHRight.png");
 		type = rand() % (4 - 1 + 1) + 1;
-		if (type == 1) {
+		if (type == 1) {//сверху
 			x = rand() % (1580 - 20 + 1) + 20;
-			shape.setOrigin(2, 20);
-			shape.setSize(Vector2f(4, 40));
+			sprite.setTexture(textureDown);
+			sprite.setOrigin(textureDown.getSize().x / 2, textureDown.getSize().y);
+			
 		}
-		if (type == 2) {
+		if (type == 2) {//снизу
 			x = rand() % (1580 - 20 + 1) + 20;
 			y = 900;
-			shape.setOrigin(2, 20);
-			shape.setSize(Vector2f(4, 40));
+			sprite.setTexture(textureUp);
+			sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y);
 		}
-		if (type == 3) {
+		if (type == 3) {//слева
 			y = rand() % (880 - 20 + 1) + 20;
-			shape.setOrigin(20, 2);
-			shape.setSize(Vector2f(40, 4));
+			sprite.setTexture(textureRight);
+			sprite.setOrigin(textureRight.getSize().x / 2, textureRight.getSize().y);
 		}
-		if (type == 4) {
+		if (type == 4) {//справа
 			y = rand() % (880 - 20 + 1) + 20;
 			x = 1600;
-			shape.setOrigin(20, 2);
-			shape.setSize(Vector2f(40, 4));
+			sprite.setTexture(textureLeft);
+			sprite.setOrigin(textureLeft.getSize().x / 2, textureLeft.getSize().y);
 		}
-		shape.setPosition(x, y);
+		sprite.setPosition(x, y);
 	}
 
 	void Move(int type, double dt) {
@@ -90,12 +105,12 @@ public:
 			x += speed * dt;
 		if (type == 4)//справа налево
 			x -= speed * dt;
-		shape.setPosition(x, y);
+		sprite.setPosition(x, y);
 	}
 
-	RectangleShape Get()
+	Sprite Get()
 	{
-		return shape;
+		return sprite;
 	};
 
 	int TYPE() { return type; };
