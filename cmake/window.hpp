@@ -117,7 +117,7 @@ public:
         Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
         Sprite exitButton(exitT);
-        exitButton.setPosition(120, 500);
+        exitButton.setPosition(100, 500);
         window.draw(exitButton);
 
         if (Mouse::isButtonPressed(Mouse::Left)) {
@@ -153,15 +153,15 @@ public:
            Texture chikat;
            chikat.loadFromFile("sprites\\CHIKAstraight.png");//Чика
            Sprite chika(chikat);
-           chika.setPosition(450, 250);
+           chika.setPosition(550, 250);
            chika.setScale(5, 5);
            window.draw(chika);
 
            Texture kikat;
            kikat.loadFromFile("sprites\\KIKAstraight.png");//Кика
            Sprite kika(kikat);
-           kika.setPosition(750, 250);
-           kika.setScale(5.5, 5.5);
+           kika.setPosition(850, 250);
+           kika.setScale(5, 5);
            window.draw(kika);
 
         if (Mouse::isButtonPressed(Mouse::Left)) {
@@ -186,7 +186,7 @@ public:
     void game() {
         //фон
         Texture backgroundGAMETexture;
-        backgroundGAMETexture.loadFromFile("sprites\\backGAME.png");
+        backgroundGAMETexture.loadFromFile("sprites\\backGame.png");
         Sprite background(backgroundGAMETexture);
         background.setScale(0.75, 0.75);
 
@@ -225,7 +225,7 @@ public:
        
         //допы в углу
         Texture dooop;
-        dooop.loadFromFile("sprites\\dop.jpg");
+        dooop.loadFromFile("sprites\\dop.png");
         Sprite dooop1(dooop);
         dooop1.setPosition(100, 300);
         dooop1.setScale(3, 3);
@@ -261,7 +261,7 @@ public:
 
         //кнопка РЕСТАРТ
         Texture restartTexture;
-        restartTexture.loadFromFile("sprites\\RESUME.png");
+        restartTexture.loadFromFile("sprites\\RESTART.png");
         Sprite restartButton(restartTexture);
         restartButton.setPosition(100, 400);
         window.draw(restartButton);

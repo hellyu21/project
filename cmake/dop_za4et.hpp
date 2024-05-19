@@ -16,10 +16,10 @@ public:
 	void Setup() {
 		x = rand() % (1580 - 20 + 1) + 20;
 		y = rand() % (880 - 20 + 1) + 20;
-		doP.loadFromFile("sprites\\dop.jpg");
+		doP.loadFromFile("sprites\\dop.png");
 		sprite.setTexture(doP);
 		sprite.setOrigin(doP.getSize().x / 2, doP.getSize().y);
-		sprite.setScale(2, 2);
+		/*sprite.setScale(0.25, 0.25);*/
 		sprite.setPosition(x, y);
 	}
 
@@ -77,6 +77,7 @@ public:
 			x = rand() % (1580 - 20 + 1) + 20;
 			sprite.setTexture(textureDown);
 			sprite.setOrigin(textureDown.getSize().x / 2, textureDown.getSize().y);
+			sprite.setScale(2, 2);
 			
 		}
 		if (type == 2) {//снизу
