@@ -6,33 +6,36 @@ class Dop {
 	double x;
 	double y;
 	double time;
-	CircleShape shape;
-
+	Texture doP;
+	Sprite sprite;
 	
 
 public:
 	Dop() = default;
-
+	//не хочет отрисовать доп:(
 	void Setup() {
 		x = rand() % (1580 - 20 + 1) + 20;
 		y = rand() % (880 - 20 + 1) + 20;
-		shape.setOrigin(10, 10);
-		shape.setRadius(10);
-		shape.setPosition(x, y);
+		doP.loadFromFile("sprites\\dop.jpg");
+		sprite.setTexture(doP);
+		sprite.setOrigin(doP.getSize().x / 2, doP.getSize().y);
+		sprite.setScale(2, 2);
+		sprite.setPosition(x, y);
 	}
 
 	~Dop() = default;
 
 	void Move(double time) {
 		y += sin(time)*0.05;
-		shape.setPosition(x, y);
+		sprite.setTexture(doP);
+		sprite.setPosition(x, y);
 	}
 
 	Dop operator=(Dop gotdop) {
 		x = gotdop.x;
 		y = gotdop.y;
 		time = gotdop.time;
-		shape = gotdop.shape;
+		sprite = gotdop.sprite;
 		return *this;
 	}
 
@@ -40,12 +43,12 @@ public:
 	double X() { return x; };
 	double Y() { return y; };
 
-	CircleShape Get()
+	Sprite Get()
 	{
-		return shape;
+		return sprite;
 	}
 };
-
+//стрелы как надо летят вроде
 class Zat {
 	double x = 0;
 	double y = 0;
@@ -81,30 +84,47 @@ public:
 			y = 900;
 			sprite.setTexture(textureUp);
 			sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y);
+			sprite.setScale(2, 2);
 		}
 		if (type == 3) {//слева
 			y = rand() % (880 - 20 + 1) + 20;
 			sprite.setTexture(textureRight);
 			sprite.setOrigin(textureRight.getSize().x / 2, textureRight.getSize().y);
+			sprite.setScale(2, 2);
 		}
 		if (type == 4) {//справа
 			y = rand() % (880 - 20 + 1) + 20;
 			x = 1600;
 			sprite.setTexture(textureLeft);
 			sprite.setOrigin(textureLeft.getSize().x / 2, textureLeft.getSize().y);
+			sprite.setScale(2, 2);
 		}
 		sprite.setPosition(x, y);
 	}
 
 	void Move(int type, double dt) {
 		if (type == 1)//сверху вниз
+		{
+			sprite.setTexture(textureDown);
 			y += speed * dt;
+		}
 		if (type == 2)//снизу вверх
+		{
+			sprite.setTexture(textureUp);
 			y -= speed * dt;
+		}
 		if (type == 3)//слева направо
+		{
+			sprite.setTexture(textureRight);
 			x += speed * dt;
+		}
+			
 		if (type == 4)//справа налево
+		{
+			sprite.setTexture(textureLeft);
 			x -= speed * dt;
+		}
+			
 		sprite.setPosition(x, y);
 	}
 

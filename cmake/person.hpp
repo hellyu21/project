@@ -43,11 +43,8 @@ public:
 
 		sprite.setTexture(textureUp);
 		sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y);
-		sprite.setPosition(x, y);
 		sprite.setScale(2, 2);
-		/*shape.setOrigin(15, 25);
-		shape.setSize(Vector2f(30, 50));
-		shape.setPosition(x, y);*/
+		sprite.setPosition(x, y);
 	}
 
 	~Person() = default;

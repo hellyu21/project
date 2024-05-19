@@ -6,8 +6,22 @@
 using namespace sf;
 using namespace std;
 
-//ошибки в пунктах choosecharacter(),gameover()!!!!!!!!
+//ошибки:
+//в game() не отрисовывается фон,там странный белый экран динамичный.
+//если игра длится дольше N времени,все ломается(но мб это из-за текстур,опять же.Все таки ошибки только с ними):(
 
+//таски:
+//во всем,где считаются касания персонажа с доп/зач/границы экрана пересчитать цифры с учетом размеров спрайтов (.getSize().x / 2, .getSize().y мб?)
+//почистить спрайт рестарта
+//дорисовать ноги у персонажей в меню выбора (Лен,сделай,пожалуйста,у меня файлов этих нет,с 0 обоих рисовать надо)
+//почистить/разделить спрайты жизней(сердечков)
+
+//ДОСТИЖЕНИЯ:
+//меню работает как надо,
+// выбор персонажа делается (но надо спрайты поменять),
+// игра играется(с кривыми текстурами,правда..),
+// итоги игры выводятся корректно(кол-во допов и время в игре),
+// все кнопки во всех состояниях игры работают
 int TouchBorder(Person& obj) {
     double x = obj.X();
     double y = obj.Y();
@@ -89,7 +103,7 @@ public:
         Texture backgroundMenuTexture;
         backgroundMenuTexture.loadFromFile("sprites\\backMenu.png");
         Sprite background(backgroundMenuTexture);
-        background.setScale(0.75f, 0.75f);
+        background.setScale(0.75, 0.75);
         window.draw(background);
 
         //кнопка старт (спрайт временный)
@@ -139,16 +153,15 @@ public:
            Texture chikat;
            chikat.loadFromFile("sprites\\CHIKAstraight.png");//Чика
            Sprite chika(chikat);
-           chika.setPosition(450, 250);//ЕЩЕ ИЗМЕНИМ
+           chika.setPosition(450, 250);
            chika.setScale(5, 5);
            window.draw(chika);
-
 
            Texture kikat;
            kikat.loadFromFile("sprites\\KIKAstraight.png");//Кика
            Sprite kika(kikat);
-           kika.setPosition(750, 250);//ЕЩЕ ИЗМЕНИМ
-           kika.setScale(5, 5);
+           kika.setPosition(750, 250);
+           kika.setScale(5.5, 5.5);
            window.draw(kika);
 
         if (Mouse::isButtonPressed(Mouse::Left)) {
@@ -167,7 +180,9 @@ public:
             }
         }
         window.display();
-    }//доработать,персонажи не выбираются
+    }
+
+    //вообще фон в игре не хочет ставиться.Траблы с текстурами..сердца/доп тоже надо поставить
     void game() {
         //фон
         Texture backgroundGAMETexture;
@@ -175,9 +190,9 @@ public:
         Sprite background(backgroundGAMETexture);
         background.setScale(0.75, 0.75);
 
-        //отрисовка сердец
+        //отрисовка жизней
         Texture heart3;
-        heart3.loadFromFile("sprites\\heartFull.png");
+        heart3.loadFromFile("sprites\\3hearts.png");
         Sprite fullheart(heart3);
 
         Texture heart2;
@@ -189,41 +204,42 @@ public:
         Sprite oneheart(heart1);
 
         int hearts = person.Hearts();
-        switch (hearts) {
-        case 3:
+        if (hearts == 3) 
+        {
             fullheart.setPosition(200, 300);
             fullheart.setScale(0.5, 0.5);
             window.draw(fullheart);
-            break;
-        case 2:
+        }
+        else if (hearts == 2)
+        {
             twoheart.setPosition(200, 300);
             twoheart.setScale(0.5, 0.5);
             window.draw(twoheart);
-            break;
-        case 1:
+        }
+        else if (hearts == 1)
+        {
             oneheart.setPosition(200, 300);
             oneheart.setScale(0.5, 0.5);
             window.draw(oneheart);
-            break;
         }
-
-        //кол-во допов в углу надо еще
+       
+        //допы в углу
         Texture dooop;
         dooop.loadFromFile("sprites\\dop.jpg");
         Sprite dooop1(dooop);
         dooop1.setPosition(100, 300);
-        dooop1.setScale(0.5, 0.5);
+        dooop1.setScale(3, 3);
         window.draw(dooop1);
         Text dopsText;
         Font font;
-        font.loadFromFile("font\\arial.ttf");
+        font.loadFromFile("font\\arial_narrow.ttf");
         dopsText.setFont(font);
         dopsText.setCharacterSize(30);
-        dopsText.setFillColor(Color::Red);
+        dopsText.setFillColor(Color::Black);
         int dops = person.DOPS();
-        string dopsString = "You have " + to_string(dops) + " dops";
+        string dopsString =  to_string(dops);
         dopsText.setString(dopsString);
-        dopsText.setPosition(100, 100);
+        dopsText.setPosition(200, 300);
         window.draw(dopsText);
 
         window.display();
@@ -233,50 +249,43 @@ public:
         Texture backgroundTexture;
         backgroundTexture.loadFromFile("sprites\\backGO.jpg");
         Sprite background(backgroundTexture);
-        background.setScale(0.75, 0.75);
-
-        //кнопка старт
-        Texture startTexture;
-        startTexture.loadFromFile("sprites\\start.png");
-        Sprite startButton(startTexture);
-        startButton.setPosition(100, 200);
-        window.draw(startButton);
+        background.setScale(1.5, 1.5);
+        window.draw(background);
 
         //кнопка выход
         Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
         Sprite exitButton(exitT);
-        exitButton.setPosition(200, 400);
-        exitButton.setScale(0.5, 0.5);
+        exitButton.setPosition(100, 600);
         window.draw(exitButton);
 
         //кнопка РЕСТАРТ
         Texture restartTexture;
-        restartTexture.loadFromFile("sprites\\RESUME.png");//перерисовать кнопку,чтоб рестарт осуществить.Если мы продолжим игру,там надо случай игры переписать
+        restartTexture.loadFromFile("sprites\\RESUME.png");
         Sprite restartButton(restartTexture);
-        restartButton.setPosition(100, 600);
+        restartButton.setPosition(100, 400);
         window.draw(restartButton);
 
         Text dopsText;
         Text timeText;
         Font font;
-        font.loadFromFile("font\\arial.ttf");
+        font.loadFromFile("font\\arial_narrow.ttf");
 
         dopsText.setFont(font);
         dopsText.setCharacterSize(30);
-        dopsText.setFillColor(Color::Red);
+        dopsText.setFillColor(Color::Black);
 
         int dops = person.DOPS();
-        string dopsString = "You have " + to_string(dops) + " dops";
+        string dopsString = "You have " + to_string(dops) + " dops.";
         dopsText.setString(dopsString);
         dopsText.setPosition(100, 100);
 
         timeText.setFont(font);
         timeText.setCharacterSize(30);
-        timeText.setFillColor(Color::Red);
-        string timeString = "Time in game: " + to_string(Time);//запутався в таймерах,сюда надо общее время в игре,в общем
+        timeText.setFillColor(Color::Black);
+        string timeString = "Time in game: " + to_string(Time) + "seconds.";
         timeText.setString(timeString);
-        timeText.setPosition(100, 100);
+        timeText.setPosition(100, 250);
        
         if (Mouse::isButtonPressed(Mouse::Left)) {
             Vector2i mousePos = Mouse::getPosition(window);
@@ -288,7 +297,7 @@ public:
                 state = choosecharacter;
             }
         }
-        window.draw(background);
+       
         window.draw(dopsText);
         window.draw(timeText);
         window.display();
