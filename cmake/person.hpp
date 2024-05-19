@@ -42,7 +42,7 @@ public:
 		}
 
 		sprite.setTexture(textureUp);
-		sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y);
+		sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y / 2);
 		sprite.setScale(2, 2);
 		sprite.setPosition(x, y);
 	}

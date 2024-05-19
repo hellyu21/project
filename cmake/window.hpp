@@ -84,7 +84,6 @@ public:
             //проработать,чтобы выбор происходил и соотв.спрайты персонажу присваивались
             break;
         case InGame:
-            game();//фон
             Setup();//персонаж
             Life();//игра
             state = gameover1;
@@ -151,14 +150,14 @@ public:
 
            //персонажи для выбора
            Texture chikat;
-           chikat.loadFromFile("sprites\\CHIKAstraight.png");//Чика
+           chikat.loadFromFile("sprites\\CHIKAmenu.png");//Чика
            Sprite chika(chikat);
            chika.setPosition(550, 250);
            chika.setScale(5, 5);
            window.draw(chika);
 
            Texture kikat;
-           kikat.loadFromFile("sprites\\KIKAstraight.png");//Кика
+           kikat.loadFromFile("sprites\\KIKAmenu.png");//Кика
            Sprite kika(kikat);
            kika.setPosition(850, 250);
            kika.setScale(5, 5);
@@ -182,68 +181,7 @@ public:
         window.display();
     }
 
-    //вообще фон в игре не хочет ставиться.Траблы с текстурами..сердца/доп тоже надо поставить
-    void game() {
-        //фон
-        Texture backgroundGAMETexture;
-        backgroundGAMETexture.loadFromFile("sprites\\backGame.png");
-        Sprite background(backgroundGAMETexture);
-        background.setScale(0.75, 0.75);
-
-        //отрисовка жизней
-        Texture heart3;
-        heart3.loadFromFile("sprites\\3hearts.png");
-        Sprite fullheart(heart3);
-
-        Texture heart2;
-        heart2.loadFromFile("sprites\\2hearts.png");
-        Sprite twoheart(heart2);
-
-        Texture heart1;
-        heart1.loadFromFile("sprites\\1heart.png");
-        Sprite oneheart(heart1);
-
-        int hearts = person.Hearts();
-        if (hearts == 3) 
-        {
-            fullheart.setPosition(200, 300);
-            fullheart.setScale(0.5, 0.5);
-            window.draw(fullheart);
-        }
-        else if (hearts == 2)
-        {
-            twoheart.setPosition(200, 300);
-            twoheart.setScale(0.5, 0.5);
-            window.draw(twoheart);
-        }
-        else if (hearts == 1)
-        {
-            oneheart.setPosition(200, 300);
-            oneheart.setScale(0.5, 0.5);
-            window.draw(oneheart);
-        }
-       
-        //допы в углу
-        Texture dooop;
-        dooop.loadFromFile("sprites\\dop.png");
-        Sprite dooop1(dooop);
-        dooop1.setPosition(100, 300);
-        dooop1.setScale(3, 3);
-        window.draw(dooop1);
-        Text dopsText;
-        Font font;
-        font.loadFromFile("font\\arial_narrow.ttf");
-        dopsText.setFont(font);
-        dopsText.setCharacterSize(30);
-        dopsText.setFillColor(Color::Black);
-        int dops = person.DOPS();
-        string dopsString =  to_string(dops);
-        dopsText.setString(dopsString);
-        dopsText.setPosition(200, 300);
-        window.draw(dopsText);
-
-        window.display();
-    }
+    
     void GameOver() {
         //фон
         Texture backgroundTexture;
@@ -410,6 +348,64 @@ public:
                 person.Move(3, dt);
 
             window.clear();
+
+            Texture backgroundGAMETexture;
+            backgroundGAMETexture.loadFromFile("sprites\\backGame.png");
+            Sprite background(backgroundGAMETexture);
+            window.draw(background);
+
+            //отрисовка жизней
+            Texture heart3;
+            heart3.loadFromFile("sprites\\3hearts.png");
+            Sprite fullheart(heart3);
+
+            Texture heart2;
+            heart2.loadFromFile("sprites\\2hearts.png");
+            Sprite twoheart(heart2);
+
+            Texture heart1;
+            heart1.loadFromFile("sprites\\1heart.png");
+            Sprite oneheart(heart1);
+
+            int hearts = person.Hearts();
+            if (hearts == 3)
+            {
+                fullheart.setPosition(50, 30);
+                fullheart.setScale(0.5, 0.5);
+                window.draw(fullheart);
+            }
+            else if (hearts == 2)
+            {
+                twoheart.setPosition(50, 30);
+                twoheart.setScale(0.5, 0.5);
+                window.draw(twoheart);
+            }
+            else if (hearts == 1)
+            {
+                oneheart.setPosition(50, 30);
+                oneheart.setScale(0.5, 0.5);
+                window.draw(oneheart);
+            }
+
+            //допы в углу
+            Texture dooop;
+            dooop.loadFromFile("sprites\\dop.png");
+            Sprite dooop1(dooop);
+            dooop1.setPosition(200, 30);
+            dooop1.setScale(2, 2);
+            window.draw(dooop1);
+            Text dopsText;
+            Font font;
+            font.loadFromFile("font\\arial_narrow.ttf");
+            dopsText.setFont(font);
+            dopsText.setCharacterSize(30);
+            dopsText.setFillColor(Color::Black);
+            int dopes = person.DOPS();
+            string dopsString = to_string(dopes);
+            dopsText.setString(dopsString);
+            dopsText.setPosition(290, 30);
+            window.draw(dopsText);
+
             for (int i = 0; i < zachcount; i++) {
                 int typezat = zacheti[i].TYPE();
                 if ((typezat == 1 && zacheti[i].Y() - 20 > 900) || (typezat == 2 && zacheti[i].Y() + 20 < 0) || (typezat ==3 && zacheti[i].X() - 20 > 1600) || (typezat == 4 && zacheti[i].X() + 20 < 0)) {

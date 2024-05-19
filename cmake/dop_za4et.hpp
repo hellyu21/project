@@ -18,7 +18,7 @@ public:
 		y = rand() % (880 - 20 + 1) + 20;
 		doP.loadFromFile("sprites\\dop.png");
 		sprite.setTexture(doP);
-		sprite.setOrigin(doP.getSize().x / 2, doP.getSize().y);
+		sprite.setOrigin(doP.getSize().x / 2, doP.getSize().y/2);
 		/*sprite.setScale(0.25, 0.25);*/
 		sprite.setPosition(x, y);
 	}
@@ -76,7 +76,7 @@ public:
 		if (type == 1) {//сверху
 			x = rand() % (1580 - 20 + 1) + 20;
 			sprite.setTexture(textureDown);
-			sprite.setOrigin(textureDown.getSize().x / 2, textureDown.getSize().y);
+			sprite.setOrigin(textureDown.getSize().x / 2, textureDown.getSize().y/2);
 			sprite.setScale(2, 2);
 			
 		}
@@ -84,20 +84,20 @@ public:
 			x = rand() % (1580 - 20 + 1) + 20;
 			y = 900;
 			sprite.setTexture(textureUp);
-			sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y);
+			sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y/2);
 			sprite.setScale(2, 2);
 		}
 		if (type == 3) {//слева
 			y = rand() % (880 - 20 + 1) + 20;
 			sprite.setTexture(textureRight);
-			sprite.setOrigin(textureRight.getSize().x / 2, textureRight.getSize().y);
+			sprite.setOrigin(textureRight.getSize().x / 2, textureRight.getSize().y/2);
 			sprite.setScale(2, 2);
 		}
 		if (type == 4) {//справа
 			y = rand() % (880 - 20 + 1) + 20;
 			x = 1600;
 			sprite.setTexture(textureLeft);
-			sprite.setOrigin(textureLeft.getSize().x / 2, textureLeft.getSize().y);
+			sprite.setOrigin(textureLeft.getSize().x / 2, textureLeft.getSize().y/2);
 			sprite.setScale(2, 2);
 		}
 		sprite.setPosition(x, y);
