@@ -6,11 +6,13 @@ using namespace std;
 class Person{
 	double x;
 	double y;
-	double speed = 150;
+	double speed = 140;
+	
 	int hearts = 3;
 	int dops = 0;
 
 	//спрайты
+	Texture menu;
 	Texture textureUp;
 	Texture textureDown;
 	Texture textureLeft;
@@ -28,12 +30,14 @@ public:
 
 		switch (selectedCharacter) {
 		case CHIKA:
+			menu.loadFromFile("sprites\\CHIKAmenu.png");
 			textureUp.loadFromFile("sprites\\CHIKAstraight.png");
 			textureDown.loadFromFile("sprites\\CHIKAback.png");
 			textureLeft.loadFromFile("sprites\\CHIKAleft.png");
 			textureRight.loadFromFile("sprites\\CHIKAright.png");
 			break;
 		case KIKA:
+			menu.loadFromFile("sprites\\KIKAmenu.png");
 			textureUp.loadFromFile("sprites\\KIKAstraight.png");
 			textureDown.loadFromFile("sprites\\KIKAback.png");
 			textureLeft.loadFromFile("sprites\\KIKAleft.png");
@@ -41,8 +45,8 @@ public:
 			break;
 		}
 
-		sprite.setTexture(textureUp);
-		sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y / 2);
+		sprite.setTexture(menu);
+		sprite.setOrigin(menu.getSize().x / 2, menu.getSize().y / 2);
 		sprite.setScale(2, 2);
 		sprite.setPosition(x, y);
 	}
@@ -78,15 +82,15 @@ public:
 	}
 
 	//геттеры и сеттеры
-	double X() { return x; };
-	double Y() { return y; };
+	double X() { return x; }
+	double Y() { return y; }
 
 	//не очень нужно
-	int DOPS() { return dops; };
-	int Hearts() { return hearts; };
+	int DOPS() { return dops; }
+	int Hearts() { return hearts; }
 
 	void plusDop() { dops++; }
-	void Minusheart() { hearts--; };
+	void Minusheart() { hearts--; }
 
 	void typeCharacter(int i) {
 		if (i == 1)
@@ -95,8 +99,5 @@ public:
 			selectedCharacter = KIKA;
 	}
 
-	Sprite Get()
-	{
-		return sprite;
-	}
+	Sprite Get(){ return sprite; }
 };
