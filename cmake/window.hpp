@@ -114,11 +114,13 @@ public:
         //текст
         Text nameText;
         Font font;
-        font.loadFromFile("font\\arial_narrow.ttf");
+        font.loadFromFile("font\\Trick.ttf");
         nameText.setFont(font);
-        nameText.setCharacterSize(55);
+        nameText.setCharacterSize(70);
+        nameText.setOutlineThickness(15);
+        nameText.setOutlineColor(Color(250,149,18));
         nameText.setFillColor(Color::Black);
-        string nameString = "Incredible adventure of a student!";
+        string nameString = "Incredible\nadventure\nof a student!";
         nameText.setString(nameString);
         nameText.setPosition(800, 200);
       
@@ -141,6 +143,8 @@ public:
         spaceText.setFont(font);
         spaceText.setCharacterSize(60);
         spaceText.setFillColor(Color::Black);
+        spaceText.setOutlineThickness(10);
+        spaceText.setOutlineColor(Color(250,149,18));
         string spaceString = "Press SPACE to start";
         spaceText.setString(spaceString);
         spaceText.setPosition(800, 800);
@@ -192,13 +196,15 @@ public:
            //текст
            Text chooseText;
            Font font;
-           font.loadFromFile("font\\arial_narrow.ttf");
+           font.loadFromFile("font\\Trick.ttf");
            chooseText.setFont(font);
            chooseText.setCharacterSize(40);
+           chooseText.setOutlineThickness(5);
+           chooseText.setOutlineColor(Color(250,149,18));
            chooseText.setFillColor(Color::Black);
            string chooseString = "Choose your character";
            chooseText.setString(chooseString);
-           chooseText.setPosition(600, 100); 
+           chooseText.setPosition(500, 100); 
 
            //персонажи для выбора
            Texture chikat;
@@ -265,9 +271,11 @@ public:
         Text dopsText;
         Text timeText;
         Font font;
-        font.loadFromFile("font\\arial_narrow.ttf");
+        font.loadFromFile("font\\Trick.ttf");
         dopsText.setFont(font);
         dopsText.setCharacterSize(30);
+        dopsText.setOutlineThickness(3);
+        dopsText.setOutlineColor(Color(250,149,18));
         dopsText.setFillColor(Color::Black);
 
         int dops = person.DOPS();
@@ -277,6 +285,8 @@ public:
 
         timeText.setFont(font);
         timeText.setCharacterSize(30);
+        timeText.setOutlineThickness(3);
+        timeText.setOutlineColor(Color(250,149,18));
         timeText.setFillColor(Color::Black);
         string timeString = "Time in game: " + to_string(Time) + "seconds.";
         timeText.setString(timeString);
@@ -392,16 +402,18 @@ public:
         Texture dooop;
         dooop.loadFromFile("sprites\\dop.png");
         Sprite dooop1(dooop);
-        dooop1.setPosition(200, 30);
+        dooop1.setPosition(250, 40);
         dooop1.setScale(2, 2);
 
         Text dopsText;
         Font font;
-        font.loadFromFile("font\\arial_narrow.ttf");
+        font.loadFromFile("font\\Trick.ttf");
         dopsText.setFont(font);
         dopsText.setCharacterSize(30);
+        dopsText.setOutlineThickness(3);
+        dopsText.setOutlineColor(Color::White);
         dopsText.setFillColor(Color::Black);
-        dopsText.setPosition(290, 30);
+        dopsText.setPosition(350, 60);
 
        
 
@@ -464,20 +476,20 @@ public:
             int hearts = person.Hearts();
             if (hearts == 3)
             {
-                fullheart.setPosition(50, 30);
-                fullheart.setScale(0.5, 0.5);
+                fullheart.setPosition(50, 50);
+                fullheart.setScale(0.75, 0.75);
                 window.draw(fullheart);
             }
             else if (hearts == 2)
             {
-                twoheart.setPosition(50, 30);
-                twoheart.setScale(0.5, 0.5);
+                twoheart.setPosition(50, 50);
+                twoheart.setScale(0.75, 0.75);
                 window.draw(twoheart);
             }
             else if (hearts == 1)
             {
-                oneheart.setPosition(50, 30);
-                oneheart.setScale(0.5, 0.5);
+                oneheart.setPosition(50, 50);
+                oneheart.setScale(0.75, 0.75);
                 window.draw(oneheart);
             }
 
@@ -547,16 +559,6 @@ public:
             }
 
             if (Time >= 40 && persontimer > 7 && Time < 60) {
-                person.SpeedChange(3);
-                speed_zach += 3;
-                for (int i = 0; i < zachcount; i++) {
-                    zacheti[i].setSpeed(speed_zach);
-                }
-                speed_creation -= 0.005;
-                persontimer = 0;
-            }
-
-            if (Time >= 60 && persontimer > 6) {
                 person.SpeedChange(3);
                 speed_zach += 3;
                 for (int i = 0; i < zachcount; i++) {
