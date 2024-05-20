@@ -6,7 +6,8 @@ using namespace std;
 class Person{
 	double x;
 	double y;
-	double speed = 150;
+	double speed = 20;
+	double fps = 10;
 	int hearts = 3;
 	int dops = 0;
 
@@ -60,22 +61,22 @@ public:
 		if (i == 1)//up
 		{
 			sprite.setTexture(textureDown);
-			y -= speed * dt;
+			y -= speed * dt * fps;
 		}
 		else if (i == 2) //down
 		{
 			sprite.setTexture(textureUp);
-			y += speed * dt;
+			y += speed * dt * fps;
 		}
 		else if (i == 3) //left
 		{
 			sprite.setTexture(textureLeft);
-			x -= speed * dt;
+			x -= speed * dt * fps;
 		}
 		else if (i == 4) //right
 		{
 			sprite.setTexture(textureRight);
-			x += speed * dt;
+			x += speed * dt * fps;
 		}
 		sprite.setPosition(x, y);
 	}

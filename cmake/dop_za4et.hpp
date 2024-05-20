@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 //штуки,с которыми ошибки
-//#include "OpenGL.hpp"//находитс€ в ext/sfml/include/sfml
+//#include <SFML/OpenGL.hpp>
 using namespace sf;
 using namespace std;
 
@@ -14,15 +14,8 @@ public:
 	Dop() = default;
 	//не хочет отрисовать доп:(
 	void Setup() {
-		dop.loadFromFile("sprites\\dop.png");
-		if (!dop.loadFromFile("sprites\\dop.png")) {
-			cout<<"Error of loading texture for DOP"; //Ќ≈“” ”¬≈ƒќћЋ≈Ќ»я “ј ќ√ќ,¬—≈ «ј√–”∆ј≈“—я!ѕросто не хочет примен€тьс€...
-		}
-
 		sprite1.setTexture(dop);
 		sprite1.setOrigin(dop.getSize().x / 2, dop.getSize().y/2);
-		/*sprite1.setScale(0.25, 0.25);*/
-		//sprite1.setScale(2, 2);
 		x = rand() % (1580 - 40 + 1) + 40;
 		y = rand() % (880 - 40 + 1) + 40;
 		sprite1.setPosition(x, y);
@@ -44,19 +37,6 @@ public:
 		return *this;
 	}
 
-	//далее все в разработке.ѕытаюсь очищать пам€ть от текстур удаленных объектов
-	//удаление текстуры
-	/*void ReleaseTexture(Texture& texture) {
-		GLuint textureID = texture.getNativeHandle();
-
-		if (textureID != 0) {
-			glDeleteTextures(1, &textureID);
-		}
-	}
-	Texture& GetTextureDop() {
-		return dop;
-	}*/
-
 	//геттеры и сеттеры
 	double X() { return x; };
 	double Y() { return y; };
@@ -74,7 +54,8 @@ class Zat {
 	double x = 0;
 	double y = 0;
 	int type;
-	int speed = 140;
+	int speed = 20;
+	int fps = 5;
 
 	//дл€ зачета
 	Texture textureUp;
@@ -127,23 +108,23 @@ public:
 		if (type == 1)//сверху вниз
 		{
 			sprite.setTexture(textureDown);
-			y += speed * dt;
+			y += speed * dt * fps;
 		}
 		if (type == 2)//снизу вверх
 		{
 			sprite.setTexture(textureUp);
-			y -= speed * dt;
+			y -= speed * dt * fps;
 		}
 		if (type == 3)//слева направо
 		{
 			sprite.setTexture(textureRight);
-			x += speed * dt;
+			x += speed * dt * fps;
 		}
 			
 		if (type == 4)//справа налево
 		{
 			sprite.setTexture(textureLeft);
-			x -= speed * dt;
+			x -= speed * dt * fps;
 		}
 			
 		sprite.setPosition(x, y);
@@ -153,30 +134,6 @@ public:
 	{
 		return sprite;
 	};
-
-	//далее все в разработке.ѕытаюсь очищать пам€ть от текстур удаленных объектов
-	//Texture& GetTextureZACH() {
-	//	if (type == 1) {
-	//		return textureDown;
-	//	}
-	//	else if (type == 2) {
-	//		return textureUp;
-	//	}
-	//	else if (type == 3) {
-	//		return textureRight;
-	//	}
-	//	else if (type == 4) {
-	//		return textureLeft;
-	//	}
-	//}
-	////удаление текстуры (в процессе разработки.ѕытаюсь это применить)
-	//void ReleaseTexture(Texture& texture) {
-	//	GLuint textureID = texture.getNativeHandle();
-
-	//	if (textureID != 0) {
-	//		glDeleteTextures(1, &textureID);
-	//	}
-	//}
 
 	int TYPE() { return type; };
 	double X() { return x; };

@@ -13,7 +13,6 @@ using namespace std;
 //если игра длится дольше N времени,все ломается(но мб это из-за текстур,опять же.Все таки ошибки только с ними):(
 
 //таски:
-//FPS
 //звук воспроизвести (делала все как в 4 лабе, но почему то тут не хочет воспроизводиться звук)
 //допы должны получить свою текстуру и отобразиться во время игры
 
@@ -51,6 +50,7 @@ private:
     int scy = 900;
     int speed_creation = 5;
     int speed_zach = 140;
+    
     enum  State { menu, choosecharacter, InGame, gameover1, gameover2 };//разные состояния игры
     State state;
     SoundBuffer buffer;
@@ -338,6 +338,7 @@ public:
         int dopcount = 0;
         int zachcount = 0;
         bool Gameover = 0;
+        bool zvuk = 0; 
 
         Texture backgroundGAMETexture;
         backgroundGAMETexture.loadFromFile("sprites\\backGame.png");
@@ -371,20 +372,29 @@ public:
         dopsText.setFillColor(Color::Black);
         dopsText.setPosition(290, 30);
 
-        buffer.loadFromFile("sprites\\time_dop.wav");
-        soundEffect.setBuffer(buffer); 
+       
 
         while (window.isOpen() && !Gameover)
         {
+            Event event;
+            while (window.pollEvent(event)) {
+                if (event.type == Event::Closed) {
+                    window.close();
+                }
+            }
             float dt = clock.getElapsedTime().asSeconds();
             clock.restart();
             Time += dt;
             doptimer += dt;
             persontimer += dt;
             zachtimer += dt;
-
-            if (Time == 3 && doptimer > speed_creation)
-                soundEffect.play();//не воспроизводится..
+            //buffer.loadFromFile("sprites\\time_dop.wav");
+            //soundEffect.setBuffer(buffer); 
+            //if (Time == 3 && !zvuk)
+            //{
+            //    soundEffect.play();//не воспроизводится..
+            //    zvuk = 1;
+            //}
             if (Time > 3 && doptimer > speed_creation && dopcount < 25) {
                 Dop tmp;
                 tmp.Setup();
