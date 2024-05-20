@@ -6,19 +6,17 @@ class Dop {
 	double x;
 	double y;
 	double time;
-	Texture doP;
+	Texture dop;
 	Sprite sprite;
-	
-
 public:
 	Dop() = default;
 	//не хочет отрисовать доп:(
 	void Setup() {
 		x = rand() % (1580 - 20 + 1) + 20;
 		y = rand() % (880 - 20 + 1) + 20;
-		doP.loadFromFile("sprites\\dop.png");
-		sprite.setTexture(doP);
-		sprite.setOrigin(doP.getSize().x / 2, doP.getSize().y/2);
+		dop.loadFromFile("sprites\\dop.png");
+		sprite.setTexture(dop);
+		sprite.setOrigin(dop.getSize().x / 2, dop.getSize().y/2);
 		/*sprite.setScale(0.25, 0.25);*/
 		sprite.setPosition(x, y);
 	}
@@ -27,7 +25,6 @@ public:
 
 	void Move(double time) {
 		y += sin(time)*0.05;
-		sprite.setTexture(doP);
 		sprite.setPosition(x, y);
 	}
 
