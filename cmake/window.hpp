@@ -341,19 +341,13 @@ public:
 
             //возможный звук "настало время выдавать допы"
             if (Time > 3 && doptimer > speed_creation && dopcount < 25) {
-                Dop tmp;
-                tmp.Setup();
-                dops[dopcount] = tmp;
-                tmp.~Dop();
+                dops[dopcount].Setup();
                 dopcount++;
                 doptimer = 0;
             }
 
             if (Time > 3 && zachtimer > speed_creation && zachcount < 15) {
-                Zat tmp;
-                tmp.Setup();
-                zacheti[zachcount] = tmp;
-                tmp.~Zat();
+                zacheti[zachcount].Setup();
                 zachcount++;
                 zachtimer = 0;
             }

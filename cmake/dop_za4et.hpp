@@ -10,14 +10,13 @@ class Dop {
 	Sprite sprite;
 public:
 	Dop() = default;
-	//не хочет отрисовать доп:(
+
 	void Setup() {
 		x = rand() % (1580 - 20 + 1) + 20;
 		y = rand() % (880 - 20 + 1) + 20;
 		dop.loadFromFile("sprites\\dop.png");
 		sprite.setTexture(dop);
 		sprite.setOrigin(dop.getSize().x / 2, dop.getSize().y/2);
-		/*sprite.setScale(0.25, 0.25);*/
 		sprite.setPosition(x, y);
 	}
 
@@ -32,7 +31,8 @@ public:
 		x = gotdop.x;
 		y = gotdop.y;
 		time = gotdop.time;
-		sprite = gotdop.sprite;
+		dop.loadFromFile("sprites\\dop.png");
+		sprite.setTexture(dop);
 		return *this;
 	}
 
@@ -100,6 +100,26 @@ public:
 		sprite.setPosition(x, y);
 	}
 
+	Zat operator=(Zat gotzat) {
+		x = gotzat.x;
+		y = gotzat.y;
+		speed = gotzat.speed;
+		type = gotzat.type;
+		textureUp.loadFromFile("sprites\\ZACHup.png");
+		textureDown.loadFromFile("sprites\\ZACHdown.png");
+		textureLeft.loadFromFile("sprites\\ZACHleft.png");
+		textureRight.loadFromFile("sprites\\ZACHRight.png");
+		if (type == 1)
+			sprite.setTexture(textureDown);
+		if (type == 2) 
+			sprite.setTexture(textureUp);
+		if (type == 3)
+			sprite.setTexture(textureRight);
+		if (type == 4) 
+			sprite.setTexture(textureLeft);
+		return *this;
+	}
+
 	void Move(int type, double dt) {
 		if (type == 1)//сверху вниз
 		{
@@ -136,3 +156,4 @@ public:
 	double Y() { return y; };
 	void setSpeed(int gspeed) { speed = gspeed; };
 };
+
