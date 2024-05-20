@@ -1,4 +1,6 @@
 #include <SFML/Graphics.hpp>
+//штуки,с которыми ошибки
+//#include "OpenGL.hpp"//находитс€ в ext/sfml/include/sfml
 using namespace sf;
 using namespace std;
 
@@ -7,45 +9,67 @@ class Dop {
 	double y;
 	double time;
 	Texture dop;
-	Sprite sprite;
+	Sprite sprite1;
 public:
 	Dop() = default;
 	//не хочет отрисовать доп:(
 	void Setup() {
-		x = rand() % (1580 - 20 + 1) + 20;
-		y = rand() % (880 - 20 + 1) + 20;
 		dop.loadFromFile("sprites\\dop.png");
-		sprite.setTexture(dop);
-		sprite.setOrigin(dop.getSize().x / 2, dop.getSize().y/2);
-		/*sprite.setScale(0.25, 0.25);*/
-		sprite.setPosition(x, y);
+		if (!dop.loadFromFile("sprites\\dop.png")) {
+			cout<<"Error of loading texture for DOP"; //Ќ≈“” ”¬≈ƒќћЋ≈Ќ»я “ј ќ√ќ,¬—≈ «ј√–”∆ј≈“—я!ѕросто не хочет примен€тьс€...
+		}
+
+		sprite1.setTexture(dop);
+		sprite1.setOrigin(dop.getSize().x / 2, dop.getSize().y/2);
+		/*sprite1.setScale(0.25, 0.25);*/
+		//sprite1.setScale(2, 2);
+		x = rand() % (1580 - 40 + 1) + 40;
+		y = rand() % (880 - 40 + 1) + 40;
+		sprite1.setPosition(x, y);
 	}
 
-	~Dop() = default;
+	~Dop()=default;
 
 	void Move(double time) {
 		y += sin(time)*0.05;
-		sprite.setPosition(x, y);
+		sprite1.setTexture(dop);
+		sprite1.setPosition(x, y);
 	}
 
 	Dop operator=(Dop gotdop) {
 		x = gotdop.x;
 		y = gotdop.y;
 		time = gotdop.time;
-		sprite = gotdop.sprite;
+		sprite1 = gotdop.sprite1;
 		return *this;
 	}
+
+	//далее все в разработке.ѕытаюсь очищать пам€ть от текстур удаленных объектов
+	//удаление текстуры
+	/*void ReleaseTexture(Texture& texture) {
+		GLuint textureID = texture.getNativeHandle();
+
+		if (textureID != 0) {
+			glDeleteTextures(1, &textureID);
+		}
+	}
+	Texture& GetTextureDop() {
+		return dop;
+	}*/
 
 	//геттеры и сеттеры
 	double X() { return x; };
 	double Y() { return y; };
 
+
+	
+
 	Sprite Get()
 	{
-		return sprite;
+		return sprite1;
 	}
 };
-//стрелы как надо лет€т вроде
+
 class Zat {
 	double x = 0;
 	double y = 0;
@@ -63,7 +87,6 @@ public:
 	Zat() = default;
 
 	~Zat() = default;
-
 	void Setup() {
 		textureUp.loadFromFile("sprites\\ZACHup.png");
 		textureDown.loadFromFile("sprites\\ZACHdown.png");
@@ -130,6 +153,30 @@ public:
 	{
 		return sprite;
 	};
+
+	//далее все в разработке.ѕытаюсь очищать пам€ть от текстур удаленных объектов
+	//Texture& GetTextureZACH() {
+	//	if (type == 1) {
+	//		return textureDown;
+	//	}
+	//	else if (type == 2) {
+	//		return textureUp;
+	//	}
+	//	else if (type == 3) {
+	//		return textureRight;
+	//	}
+	//	else if (type == 4) {
+	//		return textureLeft;
+	//	}
+	//}
+	////удаление текстуры (в процессе разработки.ѕытаюсь это применить)
+	//void ReleaseTexture(Texture& texture) {
+	//	GLuint textureID = texture.getNativeHandle();
+
+	//	if (textureID != 0) {
+	//		glDeleteTextures(1, &textureID);
+	//	}
+	//}
 
 	int TYPE() { return type; };
 	double X() { return x; };

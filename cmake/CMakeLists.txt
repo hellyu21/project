@@ -18,8 +18,7 @@ include_directories("inc/")
 
 link_directories("ext/SFML/lib/")	
 
-add_executable("${PROJECT_NAME}" main.cpp window.hpp person.hpp dop_za4et.hpp  Record.txt
-		
+add_executable("${PROJECT_NAME}" main.cpp window.hpp person.hpp dop_za4et.hpp  Record.txt 		
 )
 											
 target_link_libraries("${PROJECT_NAME}" sfml-graphics-s-d

@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <Windows.h>
 #include <iostream>
 #include "person.hpp"
@@ -7,32 +8,33 @@ using namespace sf;
 using namespace std;
 
 //ошибки:
-//в game() не отрисовывается фон,там странный белый экран динамичный.
+//если рестартишь игру,почему то вместо фона растянут твой персонаж
+//при смерти все ломается.
 //если игра длится дольше N времени,все ломается(но мб это из-за текстур,опять же.Все таки ошибки только с ними):(
 
 //таски:
-//во всем,где считаются касания персонажа с доп/зач/границы экрана пересчитать цифры с учетом размеров спрайтов (.getSize().x / 2, .getSize().y мб?)
-//почистить спрайт рестарта
-//дорисовать ноги у персонажей в меню выбора (Лен,сделай,пожалуйста,у меня файлов этих нет,с 0 обоих рисовать надо)
-//почистить/разделить спрайты жизней(сердечков)
+//FPS
+//звук воспроизвести (делала все как в 4 лабе, но почему то тут не хочет воспроизводиться звук)
+//допы должны получить свою текстуру и отобразиться во время игры
+
 
 //ДОСТИЖЕНИЯ:
 //меню работает как надо,
-// выбор персонажа делается (но надо спрайты поменять),
-// игра играется(с кривыми текстурами,правда..),
-// итоги игры выводятся корректно(кол-во допов и время в игре),
+// выбор персонажа делается
+// игра играется
+// итоги игры выводятся корректно(кол-во допов и время в игре),  ---теперь нет,игра ломается
 // все кнопки во всех состояниях игры работают
 int TouchBorder(Person& obj) {
     double x = obj.X();
     double y = obj.Y();
     
-    if (x + 15 > 1600)
+    if (x + 30 > 1600)
         return 4; // right
-    else if (x - 15 < 0)
+    else if (x - 30 < 0)
         return 3; // left
-    else if (y + 25 > 900)
+    else if (y + 50 > 900)
         return 2; //down
-    else if (y - 25 < 0)
+    else if (y - 50 < 0)
         return 1; //up
     else
         return 0;
@@ -42,6 +44,8 @@ class Game {
 private:
     RenderWindow window;
     Person person;
+    Zat zat;
+    Dop dop2;
     float Time = 0;
     int scx = 1600;
     int scy = 900;
@@ -49,6 +53,8 @@ private:
     int speed_zach = 140;
     enum  State { menu, choosecharacter, InGame, gameover1, gameover2 };//разные состояния игры
     State state;
+    SoundBuffer buffer;
+    Sound soundEffect;
     
    
 public:
@@ -65,6 +71,7 @@ public:
             update();
         }
     }
+
     void processEvents() {
         Event event;
         while (window.pollEvent(event)) {
@@ -81,7 +88,6 @@ public:
             break;
         case choosecharacter:
             ChooseCharacter();
-            //проработать,чтобы выбор происходил и соотв.спрайты персонажу присваивались
             break;
         case InGame:
             Setup();//персонаж
@@ -105,19 +111,40 @@ public:
         background.setScale(0.75, 0.75);
         window.draw(background);
 
-        //кнопка старт (спрайт временный)
+        //текст
+        Text nameText;
+        Font font;
+        font.loadFromFile("font\\arial_narrow.ttf");
+        nameText.setFont(font);
+        nameText.setCharacterSize(55);
+        nameText.setFillColor(Color::Black);
+        string nameString = "Incredible adventure of a student!";
+        nameText.setString(nameString);
+        nameText.setPosition(800, 200);
+        window.draw(nameText);
+
+        //кнопка старт
         Texture startTexture;
         startTexture.loadFromFile("sprites\\start.png");
         Sprite startButton(startTexture);
         startButton.setPosition(100, 200);
         window.draw(startButton);
 
-        //кнопка выход (спрайт временный)
+        //кнопка выход
         Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
         Sprite exitButton(exitT);
         exitButton.setPosition(100, 500);
         window.draw(exitButton);
+
+        Text spaceText;
+        spaceText.setFont(font);
+        spaceText.setCharacterSize(60);
+        spaceText.setFillColor(Color::Black);
+        string spaceString = "Press SPACE to start";
+        spaceText.setString(spaceString);
+        spaceText.setPosition(800, 800);
+        window.draw(spaceText);
 
         if (Mouse::isButtonPressed(Mouse::Left)) {
             Vector2i mousePos = Mouse::getPosition(window);
@@ -132,13 +159,13 @@ public:
                 state = gameover2;
             }
         }
-        //временно,пока не работает как надо
+        
         if (Keyboard::isKeyPressed(Keyboard::Key::Space)) {
+            person.typeCharacter(1);//персонаж по умолчанию
             state = InGame;
         }
         window.display();
     };
-
 
     void ChooseCharacter() {
           //фон
@@ -147,6 +174,18 @@ public:
            Sprite ccback(backgroundCCTexture);
            ccback.setScale(0.75, 0.75);
            window.draw(ccback);
+
+           //текст
+           Text chooseText;
+           Font font;
+           font.loadFromFile("font\\arial_narrow.ttf");
+           chooseText.setFont(font);
+           chooseText.setCharacterSize(40);
+           chooseText.setFillColor(Color::Black);
+           string chooseString = "Choose your character";
+           chooseText.setString(chooseString);
+           chooseText.setPosition(700, 100);
+           window.draw(chooseText);
 
            //персонажи для выбора
            Texture chikat;
@@ -213,7 +252,7 @@ public:
         dopsText.setFillColor(Color::Black);
 
         int dops = person.DOPS();
-        string dopsString = "You have " + to_string(dops) + " dops.";
+        string dopsString = "You have " + to_string(dops) + " dop(s).";
         dopsText.setString(dopsString);
         dopsText.setPosition(100, 100);
 
@@ -239,6 +278,7 @@ public:
         window.draw(timeText);
         window.display();
     }
+
     void Setup(){     
         person.Setup(scx, scy);
     }
@@ -249,13 +289,17 @@ public:
         double xd = dop.X();
         double yd = dop.Y();
 
-        if ((xp - 15 < xd - 10) && (xd - 10 < xp + 15) && (yp - 25 < yd - 10) && (yd - 10 < yp + 25))
+        if ((xp - 30 < xd - 20) && (xd - 20 < xp + 30) 
+            && (yp - 50 < yd - 20) && (yd - 20 < yp + 50))
             return true;
-        else if ((xp - 15 < xd - 10) && (xd - 10 < xp + 15) && (yp - 25 < yd + 10) && (yd + 10 < yp + 25))
+        else if ((xp - 30 < xd - 20) && (xd - 20 < xp + 30) 
+            && (yp - 50 < yd + 20) && (yd + 20 < yp + 50))
             return true;
-        else if ((xp - 15 < xd + 10) && (xd + 10 < xp + 15) && (yp - 25 < yd + 10) && (yd + 10 < yp + 25))
+        else if ((xp - 30 < xd + 20) && (xd + 20 < xp + 30) 
+            && (yp - 50 < yd + 20) && (yd + 20 < yp + 50))
             return true;
-        else if ((xp - 15 < xd + 10) && (xd + 10 < xp + 15) && (yp - 25 < yd - 10) && (yd - 10 < yp + 25))
+        else if ((xp - 30 < xd + 20) && (xd + 20 < xp + 30) 
+            && (yp - 50 < yd - 20) && (yd - 20 < yp + 50))
             return true;
         else
             return false;
@@ -268,13 +312,17 @@ public:
         double yz = zach.Y();
         int type = zach.TYPE();
 
-        if (type == 1 && (xp - 15 < xz) && (xz < xp + 15) && (yp - 25 < yz+20) && (yz + 20 < yp + 25))
+        if (type == 1 && (xp - 30 < xz) && (xz < xp + 30) &&
+            (yp - 50 < yz+40) && (yz + 40 < yp + 50))
             return true;
-        else if (type == 2 && (xp - 15 < xz) && (xz < xp + 15) && (yp - 25 < yz - 20) && (yz - 20 < yp + 25))
+        else if (type == 2 && (xp - 30 < xz) && (xz < xp + 30) 
+            && (yp - 50 < yz - 40) && (yz - 40 < yp + 50))
             return true;
-        else if (type == 3 && (xp - 15 < xz + 20) && (xz + 20 < xp + 15) && (yp - 25 < yz) && (yz < yp + 25))
+        else if (type == 3 && (xp - 30 < xz + 40) && (xz + 40 < xp + 30) 
+            && (yp - 50 < yz) && (yz < yp + 50))
             return true;
-        else if (type == 4 && (xp - 15 < xz - 20) && (xz - 20 < xp + 15) && (yp - 25 < yz) && (yz < yp + 25))
+        else if (type == 4 && (xp - 30 < xz - 40) && (xz - 40 < xp + 30) 
+            && (yp - 50 < yz) && (yz < yp + 50))
             return true;
         else
             return false;
@@ -308,7 +356,7 @@ public:
         heart1.loadFromFile("sprites\\1heart.png");
         Sprite oneheart(heart1);
         
-        //допы в углу
+        //допы
         Texture dooop;
         dooop.loadFromFile("sprites\\dop.png");
         Sprite dooop1(dooop);
@@ -323,15 +371,11 @@ public:
         dopsText.setFillColor(Color::Black);
         dopsText.setPosition(290, 30);
 
+        buffer.loadFromFile("sprites\\time_dop.wav");
+        soundEffect.setBuffer(buffer); 
+
         while (window.isOpen() && !Gameover)
         {
-            Event event;
-            while (window.pollEvent(event))
-            {
-                if (event.type == Event::Closed)
-                    window.close();
-            }
-
             float dt = clock.getElapsedTime().asSeconds();
             clock.restart();
             Time += dt;
@@ -339,7 +383,8 @@ public:
             persontimer += dt;
             zachtimer += dt;
 
-            //возможный звук "настало время выдавать допы"
+            if (Time == 3 && doptimer > speed_creation)
+                soundEffect.play();//не воспроизводится..
             if (Time > 3 && doptimer > speed_creation && dopcount < 25) {
                 Dop tmp;
                 tmp.Setup();
@@ -410,13 +455,16 @@ public:
 
             for (int i = 0; i < zachcount; i++) {
                 int typezat = zacheti[i].TYPE();
-                if ((typezat == 1 && zacheti[i].Y() - 20 > 900) || (typezat == 2 && zacheti[i].Y() + 20 < 0) || (typezat ==3 && zacheti[i].X() - 20 > 1600) || (typezat == 4 && zacheti[i].X() + 20 < 0)) {
+                if ((typezat == 1 && zacheti[i].Y() - 20 > 900) ||
+                    (typezat == 2 && zacheti[i].Y() + 20 < 0) || 
+                    (typezat == 3 && zacheti[i].X() - 20 > 1600) ||
+                    (typezat == 4 && zacheti[i].X() + 20 < 0)) {
                     zacheti[i] = zacheti[zachcount - 1];
                     typezat = zacheti[zachcount - 1].TYPE();
                     zacheti[zachcount - 1].~Zat();
                     zachcount--;
                 }
-                if (TouchZat(person, zacheti[i])) {
+                if (TouchZat(person, zacheti[i])) {              
                     zacheti[i] = zacheti[zachcount - 1];
                     typezat = zacheti[zachcount - 1].TYPE();
                     zacheti[zachcount - 1].~Zat();
@@ -434,7 +482,7 @@ public:
             for (int i = 0; i < dopcount; i++) {
                 if (TouchDop(person, dops[i])) {
                     dops[i] = dops[dopcount-1];
-                    dops[dopcount-1].~Dop();
+                    dops[dopcount - 1].~Dop();
                     dopcount--;
                     person.plusDop();
                 }
@@ -483,6 +531,5 @@ public:
                 persontimer = 0;
             }
         }
-
     }
 };
