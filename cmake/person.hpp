@@ -6,8 +6,8 @@ using namespace std;
 class Person{
 	double x;
 	double y;
-	double speed = 20;
-	double fps = 10;
+	double speed = 140;
+	
 	int hearts = 3;
 	int dops = 0;
 
@@ -61,36 +61,36 @@ public:
 		if (i == 1)//up
 		{
 			sprite.setTexture(textureDown);
-			y -= speed * dt * fps;
+			y -= speed * dt;
 		}
 		else if (i == 2) //down
 		{
 			sprite.setTexture(textureUp);
-			y += speed * dt * fps;
+			y += speed * dt;
 		}
 		else if (i == 3) //left
 		{
 			sprite.setTexture(textureLeft);
-			x -= speed * dt * fps;
+			x -= speed * dt;
 		}
 		else if (i == 4) //right
 		{
 			sprite.setTexture(textureRight);
-			x += speed * dt * fps;
+			x += speed * dt;
 		}
 		sprite.setPosition(x, y);
 	}
 
 	//геттеры и сеттеры
-	double X() { return x; };
-	double Y() { return y; };
+	double X() { return x; }
+	double Y() { return y; }
 
 	//не очень нужно
-	int DOPS() { return dops; };
-	int Hearts() { return hearts; };
+	int DOPS() { return dops; }
+	int Hearts() { return hearts; }
 
 	void plusDop() { dops++; }
-	void Minusheart() { hearts--; };
+	void Minusheart() { hearts--; }
 
 	void typeCharacter(int i) {
 		if (i == 1)
@@ -99,8 +99,5 @@ public:
 			selectedCharacter = KIKA;
 	}
 
-	Sprite Get()
-	{
-		return sprite;
-	}
+	Sprite Get(){ return sprite; }
 };

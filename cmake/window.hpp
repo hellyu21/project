@@ -109,7 +109,7 @@ public:
         backgroundMenuTexture.loadFromFile("sprites\\backMenu.png");
         Sprite background(backgroundMenuTexture);
         background.setScale(0.75, 0.75);
-        window.draw(background);
+       
 
         //текст
         Text nameText;
@@ -121,21 +121,21 @@ public:
         string nameString = "Incredible adventure of a student!";
         nameText.setString(nameString);
         nameText.setPosition(800, 200);
-        window.draw(nameText);
+      
 
         //кнопка старт
         Texture startTexture;
         startTexture.loadFromFile("sprites\\start.png");
         Sprite startButton(startTexture);
         startButton.setPosition(100, 200);
-        window.draw(startButton);
+       
 
         //кнопка выход
         Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
         Sprite exitButton(exitT);
         exitButton.setPosition(100, 500);
-        window.draw(exitButton);
+        
 
         Text spaceText;
         spaceText.setFont(font);
@@ -144,26 +144,41 @@ public:
         string spaceString = "Press SPACE to start";
         spaceText.setString(spaceString);
         spaceText.setPosition(800, 800);
-        window.draw(spaceText);
+        
 
+        bool startButtonClicked = false;
+        bool exitButtonClicked = false;
+        Vector2i mousePos = Mouse::getPosition(window);
         if (Mouse::isButtonPressed(Mouse::Left)) {
-            Vector2i mousePos = Mouse::getPosition(window);
-
             //проверка кнопки "старт"
             if (startButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                state = choosecharacter;
+                startButtonClicked = true;
             }
-
             //проверка кнопки "выход"
             if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                state = gameover2;
+                exitButtonClicked = true;
             }
         }
-        
+
+        if (startButtonClicked) {
+            state = choosecharacter; 
+            startButtonClicked = false; 
+        }
+
+        if (exitButtonClicked) { 
+            state = gameover2; 
+            exitButtonClicked = false; 
+        }
+
         if (Keyboard::isKeyPressed(Keyboard::Key::Space)) {
             person.typeCharacter(1);//персонаж по умолчанию
             state = InGame;
         }
+        window.draw(background);
+        window.draw(nameText);
+        window.draw(startButton);
+        window.draw(exitButton);
+        window.draw(spaceText);
         window.display();
     };
 
@@ -173,8 +188,7 @@ public:
            backgroundCCTexture.loadFromFile("sprites\\backMenu.png");
            Sprite ccback(backgroundCCTexture);
            ccback.setScale(0.75, 0.75);
-           window.draw(ccback);
-
+          
            //текст
            Text chooseText;
            Font font;
@@ -184,8 +198,7 @@ public:
            chooseText.setFillColor(Color::Black);
            string chooseString = "Choose your character";
            chooseText.setString(chooseString);
-           chooseText.setPosition(700, 100);
-           window.draw(chooseText);
+           chooseText.setPosition(600, 100); 
 
            //персонажи для выбора
            Texture chikat;
@@ -193,30 +206,40 @@ public:
            Sprite chika(chikat);
            chika.setPosition(550, 250);
            chika.setScale(5, 5);
-           window.draw(chika);
-
+           
            Texture kikat;
            kikat.loadFromFile("sprites\\KIKAmenu.png");//Кика
            Sprite kika(kikat);
            kika.setPosition(850, 250);
            kika.setScale(5, 5);
-           window.draw(kika);
-
+           
+           bool CHIKAButtonClicked = 0;
+           bool KIKAButtonClicked = 0;
+        Vector2i mousePos = Mouse::getPosition(window);
         if (Mouse::isButtonPressed(Mouse::Left)) {
-            Vector2i mousePos = Mouse::getPosition(window);
-
             //проверка выбора персонажа CHIKA
             if (chika.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                person.typeCharacter(1);
-                state = InGame;
+                CHIKAButtonClicked = 1;
             }
-
             //проверка выбора персонажа KIKA
             if (kika.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                person.typeCharacter(2);
-                state = InGame;
+                KIKAButtonClicked = 1;
             }
         }
+        if (CHIKAButtonClicked) {
+            person.typeCharacter(1);
+            state = InGame;
+            CHIKAButtonClicked = 0;
+        }
+        if (KIKAButtonClicked) {
+            person.typeCharacter(2);
+            state = InGame;
+            KIKAButtonClicked = 0;
+        }
+        window.draw(ccback);
+        window.draw(chooseText);
+        window.draw(chika);
+        window.draw(kika);
         window.display();
     }
     
@@ -226,27 +249,23 @@ public:
         backgroundTexture.loadFromFile("sprites\\backGO.jpg");
         Sprite background(backgroundTexture);
         background.setScale(1.5, 1.5);
-        window.draw(background);
-
+       
         //кнопка выход
         Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
         Sprite exitButton(exitT);
         exitButton.setPosition(100, 600);
-        window.draw(exitButton);
 
-        //кнопка РЕСТАРТ
+        //кнопка рестарт
         Texture restartTexture;
         restartTexture.loadFromFile("sprites\\RESTART.png");
         Sprite restartButton(restartTexture);
         restartButton.setPosition(100, 400);
-        window.draw(restartButton);
 
         Text dopsText;
         Text timeText;
         Font font;
         font.loadFromFile("font\\arial_narrow.ttf");
-
         dopsText.setFont(font);
         dopsText.setCharacterSize(30);
         dopsText.setFillColor(Color::Black);
@@ -262,18 +281,30 @@ public:
         string timeString = "Time in game: " + to_string(Time) + "seconds.";
         timeText.setString(timeString);
         timeText.setPosition(100, 250);
-       
+        bool exitButtonClicked = 0;
+        bool restartButtonClicked = 0;
+        Vector2i mousePos = Mouse::getPosition(window);
         if (Mouse::isButtonPressed(Mouse::Left)) {
-            Vector2i mousePos = Mouse::getPosition(window);
-
             if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                state = gameover2;
+                exitButtonClicked = 1;
             }
             if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                state = choosecharacter;
+                restartButtonClicked = 1;
             }
         }
-       
+        
+        if (exitButtonClicked) {
+            state = gameover2;
+            exitButtonClicked = 0;
+        }
+        if (restartButtonClicked) {
+            state = choosecharacter;
+            restartButtonClicked = 0;
+        }
+
+        window.draw(background);
+        window.draw(exitButton); 
+        window.draw(restartButton); 
         window.draw(dopsText);
         window.draw(timeText);
         window.display();

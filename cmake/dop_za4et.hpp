@@ -38,26 +38,17 @@ public:
 	}
 
 	//геттеры и сеттеры
-	double X() { return x; };
-	double Y() { return y; };
-
-
-	
-
-	Sprite Get()
-	{
-		return sprite1;
-	}
+	double X() { return x; }
+	double Y() { return y; }
+	Sprite Get(){ return sprite1; }
 };
 
 class Zat {
 	double x = 0;
 	double y = 0;
 	int type;
-	int speed = 20;
-	int fps = 5;
+	int speed = 120;
 
-	//для зачета
 	Texture textureUp;
 	Texture textureDown;
 	Texture textureLeft;
@@ -108,35 +99,31 @@ public:
 		if (type == 1)//сверху вниз
 		{
 			sprite.setTexture(textureDown);
-			y += speed * dt * fps;
+			y += speed * dt;
 		}
 		if (type == 2)//снизу вверх
 		{
 			sprite.setTexture(textureUp);
-			y -= speed * dt * fps;
+			y -= speed * dt;
 		}
 		if (type == 3)//слева направо
 		{
 			sprite.setTexture(textureRight);
-			x += speed * dt * fps;
+			x += speed * dt;
 		}
 			
 		if (type == 4)//справа налево
 		{
 			sprite.setTexture(textureLeft);
-			x -= speed * dt * fps;
+			x -= speed * dt;
 		}
 			
 		sprite.setPosition(x, y);
 	}
 
-	Sprite Get()
-	{
-		return sprite;
-	};
-
-	int TYPE() { return type; };
-	double X() { return x; };
-	double Y() { return y; };
-	void setSpeed(int gspeed) { speed = gspeed; };
+	Sprite Get() { return sprite; }
+	int TYPE() { return type; }
+	double X() { return x; }
+	double Y() { return y; }
+	void setSpeed(int gspeed) { speed = gspeed; }
 };
