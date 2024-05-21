@@ -1,7 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-using namespace sf;
-using namespace std;
 
 class Person{
 	double x;
@@ -12,12 +10,12 @@ class Person{
 	int dops = 0;
 
 	//спрайты
-	Texture menu;
-	Texture textureUp;
-	Texture textureDown;
-	Texture textureLeft;
-	Texture textureRight;
-	Sprite sprite;
+	sf::Texture menu;
+	sf::Texture textureUp;
+	sf::Texture textureDown;
+	sf::Texture textureLeft;
+	sf::Texture textureRight;
+	sf::Sprite sprite;
 
 	enum Character { CHIKA, KIKA };
 	Character selectedCharacter;
@@ -99,5 +97,5 @@ public:
 			selectedCharacter = KIKA;
 	}
 
-	Sprite Get(){ return sprite; }
+	sf::Sprite Get(){ return sprite; }
 };

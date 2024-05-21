@@ -4,8 +4,6 @@
 #include <iostream>
 #include "person.hpp"
 #include "dop_za4et.hpp"
-using namespace sf;
-using namespace std;
 
 //ошибки:
 //если рестартишь игру,почему то вместо фона раст€нут твой персонаж
@@ -14,7 +12,6 @@ using namespace std;
 
 //таски:
 //звук воспроизвести (делала все как в 4 лабе, но почему то тут не хочет воспроизводитьс€ звук)
-//допы должны получить свою текстуру и отобразитьс€ во врем€ игры
 
 
 //ƒќ—“»∆≈Ќ»я:
@@ -23,6 +20,7 @@ using namespace std;
 // игра играетс€
 // итоги игры вывод€тс€ корректно(кол-во допов и врем€ в игре),  ---теперь нет,игра ломаетс€
 // все кнопки во всех состо€ни€х игры работают
+
 int TouchBorder(Person& obj) {
     double x = obj.X();
     double y = obj.Y();
@@ -41,7 +39,7 @@ int TouchBorder(Person& obj) {
 
 class Game {
 private:
-    RenderWindow window;
+    sf::RenderWindow window;
     Person person;
     Zat zat;
     Dop dop2;
@@ -51,17 +49,17 @@ private:
     int speed_creation = 5;
     int speed_zach = 140;
     
-    enum  State { menu, choosecharacter, InGame, gameover1, gameover2 };//разные состо€ни€ игры
+    enum  State { menu, choosecharacter, InGame, gameover};//разные состо€ни€ игры
     State state;
-    SoundBuffer buffer;
-    Sound soundEffect;
+    /*SoundBuffer buffer;
+    Sound soundEffect;*/
     
    
 public:
    
     Game() { 
         srand(time(0));
-        window.create(VideoMode(scx, scy), "Incredible adventure of a student!");
+        window.create(sf::VideoMode(scx, scy), "Incredible adventure of a student!");
         state = menu;
     }
 
@@ -73,9 +71,9 @@ public:
     }
 
     void processEvents() {
-        Event event;
+        sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == Event::Closed) {
+            if (event.type == sf::Event::Closed) {
                 window.close();
             }
         }
@@ -92,237 +90,230 @@ public:
         case InGame:
             Setup();//персонаж
             Life();//игра
-            state = gameover1;
+            state = gameover;
             break;
-        case gameover1:
+        case gameover:
             GameOver();//рестарт/выход
-            break;
-        case gameover2:
-            window.close();
             break;
         }
     }
 
     void Menu() {
         //фон
-        Texture backgroundMenuTexture;
-        backgroundMenuTexture.loadFromFile("sprites\\backMenu.png");
-        Sprite background(backgroundMenuTexture);
+        sf::Texture backgroundMenuTexture; 
+        backgroundMenuTexture.loadFromFile("sprites\\backMenu.png"); 
+        sf::Sprite background(backgroundMenuTexture);
         background.setScale(0.75, 0.75);
-       
+        window.draw(background);
 
         //текст
-        Text nameText;
-        Font font;
+        sf::Text nameText; 
+        sf::Font font; 
         font.loadFromFile("font\\Trick.ttf");
         nameText.setFont(font);
         nameText.setCharacterSize(70);
         nameText.setOutlineThickness(15);
-        nameText.setOutlineColor(Color(250,149,18));
-        nameText.setFillColor(Color::Black);
-        string nameString = "Incredible\nadventure\nof a student!";
+        nameText.setOutlineColor(sf::Color(250,149,18));
+        nameText.setFillColor(sf::Color::Black);
+        std::string nameString = "Incredible\nadventure\nof a student!"; 
         nameText.setString(nameString);
         nameText.setPosition(800, 200);
-      
+        window.draw(nameText);     
 
         //кнопка старт
-        Texture startTexture;
+        sf::Texture startTexture;
         startTexture.loadFromFile("sprites\\start.png");
-        Sprite startButton(startTexture);
+        sf::Sprite startButton(startTexture);
         startButton.setPosition(100, 200);
-       
+        window.draw(startButton);   
 
         //кнопка выход
-        Texture exitT;
+        sf::Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
-        Sprite exitButton(exitT);
+        sf::Sprite exitButton(exitT);
         exitButton.setPosition(100, 500);
-        
+        window.draw(exitButton);
 
-        Text spaceText;
+        sf::Text spaceText;
         spaceText.setFont(font);
         spaceText.setCharacterSize(60);
-        spaceText.setFillColor(Color::Black);
+        spaceText.setFillColor(sf::Color::Black);
         spaceText.setOutlineThickness(10);
-        spaceText.setOutlineColor(Color(250,149,18));
-        string spaceString = "Press SPACE to start";
+        spaceText.setOutlineColor(sf::Color(250,149,18));
+        std:: string spaceString = "Press SPACE to start";
         spaceText.setString(spaceString);
         spaceText.setPosition(800, 800);
-        
-
-        bool startButtonClicked = false;
-        bool exitButtonClicked = false;
-        Vector2i mousePos = Mouse::getPosition(window);
-        if (Mouse::isButtonPressed(Mouse::Left)) {
-            //проверка кнопки "старт"
-            if (startButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                startButtonClicked = true;
-            }
-            //проверка кнопки "выход"
-            if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                exitButtonClicked = true;
-            }
-        }
-
-        if (startButtonClicked) {
-            state = choosecharacter; 
-            startButtonClicked = false; 
-        }
-
-        if (exitButtonClicked) { 
-            state = gameover2; 
-            exitButtonClicked = false; 
-        }
-
-        if (Keyboard::isKeyPressed(Keyboard::Key::Space)) {
-            person.typeCharacter(1);//персонаж по умолчанию
-            state = InGame;
-        }
-        window.draw(background);
-        window.draw(nameText);
-        window.draw(startButton);
-        window.draw(exitButton);
         window.draw(spaceText);
+
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                if (startButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                    state = choosecharacter;
+                else if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                   window.close();
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
+                person.typeCharacter(1);//персонаж по умолчанию
+                state = InGame;
+            }
+            else if (event.type == sf::Event::KeyPressed)
+                if (event.key.code == sf::Keyboard::Escape)
+                    window.close();
+        }
+       
+       
         window.display();
     };
 
     void ChooseCharacter() {
           //фон
-           Texture backgroundCCTexture;
+           sf::Texture backgroundCCTexture;
            backgroundCCTexture.loadFromFile("sprites\\backMenu.png");
-           Sprite ccback(backgroundCCTexture);
+           sf::Sprite ccback(backgroundCCTexture);
            ccback.setScale(0.75, 0.75);
-          
+           window.draw(ccback);
+
            //текст
-           Text chooseText;
-           Font font;
+           sf::Text chooseText;
+           sf::Text num1;
+           sf::Text num2;
+           sf::Font font;
            font.loadFromFile("font\\Trick.ttf");
-           chooseText.setFont(font);
+           chooseText.setFont(font); 
            chooseText.setCharacterSize(40);
            chooseText.setOutlineThickness(5);
-           chooseText.setOutlineColor(Color(250,149,18));
-           chooseText.setFillColor(Color::Black);
-           string chooseString = "Choose your character";
+           chooseText.setOutlineColor(sf::Color(250,149,18));
+           chooseText.setFillColor(sf::Color::Black);
+           std::string chooseString = "Choose your character";
            chooseText.setString(chooseString);
            chooseText.setPosition(500, 100); 
+           window.draw(chooseText);
+
+           num1.setFont(font);
+           num1.setCharacterSize(40);
+           num1.setOutlineThickness(5);
+           num1.setOutlineColor(sf::Color(250, 149, 18));
+           num1.setFillColor(sf::Color::Black);
+           std::string num1s = "Chika";
+           num1.setString(num1s);
+           num1.setPosition(550, 550);
+           window.draw(num1);
+
+           num2.setFont(font); 
+           num2.setCharacterSize(40); 
+           num2.setOutlineThickness(5); 
+           num2.setOutlineColor(sf::Color(250, 149, 18)); 
+           num2.setFillColor(sf::Color::Black); 
+           std::string num2s = "Kika";
+           num2.setString(num2s);
+           num2.setPosition(850, 550); 
+           window.draw(num2);
 
            //персонажи дл€ выбора
-           Texture chikat;
+           sf::Texture chikat;
            chikat.loadFromFile("sprites\\CHIKAmenu.png");//„ика
-           Sprite chika(chikat);
+           sf::Sprite chika(chikat);
            chika.setPosition(550, 250);
            chika.setScale(5, 5);
-           
-           Texture kikat;
+           window.draw(chika);
+
+           sf::Texture kikat;
            kikat.loadFromFile("sprites\\KIKAmenu.png");// ика
-           Sprite kika(kikat);
+           sf::Sprite kika(kikat);
            kika.setPosition(850, 250);
            kika.setScale(5, 5);
-           
-           bool CHIKAButtonClicked = 0;
-           bool KIKAButtonClicked = 0;
-        Vector2i mousePos = Mouse::getPosition(window);
-        if (Mouse::isButtonPressed(Mouse::Left)) {
-            //проверка выбора персонажа CHIKA
-            if (chika.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                CHIKAButtonClicked = 1;
+           window.draw(kika);
+         
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                if (chika.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                {
+                    person.typeCharacter(1);
+                    state = InGame;
+                }
+
+                else if (kika.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                {
+                    person.typeCharacter(2);
+                    state = InGame;
+                }
             }
-            //проверка выбора персонажа KIKA
-            if (kika.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                KIKAButtonClicked = 1;
-            }
+            else if (event.type == sf::Event::KeyPressed)
+                if (event.key.code == sf::Keyboard::Escape)
+                    state = menu;
         }
-        if (CHIKAButtonClicked) {
-            person.typeCharacter(1);
-            state = InGame;
-            CHIKAButtonClicked = 0;
-        }
-        if (KIKAButtonClicked) {
-            person.typeCharacter(2);
-            state = InGame;
-            KIKAButtonClicked = 0;
-        }
-        window.draw(ccback);
-        window.draw(chooseText);
-        window.draw(chika);
-        window.draw(kika);
         window.display();
     }
     
     void GameOver() {
         //фон
-        Texture backgroundTexture;
+        sf::Texture backgroundTexture;
         backgroundTexture.loadFromFile("sprites\\backGO.jpg");
-        Sprite background(backgroundTexture);
+        sf::Sprite background(backgroundTexture);
         background.setScale(1.5, 1.5);
+        window.draw(background);
        
         //кнопка выход
-        Texture exitT;
+        sf::Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
-        Sprite exitButton(exitT);
+        sf::Sprite exitButton(exitT);
         exitButton.setPosition(100, 600);
-
+        window.draw(exitButton);
+       
         //кнопка рестарт
-        Texture restartTexture;
+        sf::Texture restartTexture;
         restartTexture.loadFromFile("sprites\\RESTART.png");
-        Sprite restartButton(restartTexture);
+        sf::Sprite restartButton(restartTexture);
         restartButton.setPosition(100, 400);
-
-        Text dopsText;
-        Text timeText;
-        Font font;
+        window.draw(restartButton);
+      
+        sf::Text dopsText;
+        sf::Text timeText;
+        sf::Font font;
         font.loadFromFile("font\\Trick.ttf");
         dopsText.setFont(font);
         dopsText.setCharacterSize(30);
         dopsText.setOutlineThickness(3);
-        dopsText.setOutlineColor(Color(250,149,18));
-        dopsText.setFillColor(Color::Black);
-
+        dopsText.setOutlineColor(sf::Color(250,149,18));
+        dopsText.setFillColor(sf::Color::Black);
+        window.draw(dopsText);
+       
         int dops = person.DOPS();
-        string dopsString = "You have " + to_string(dops) + " dop(s).";
+        std::string dopsString = "You have " + std::to_string(dops) + " dop(s).";
         dopsText.setString(dopsString);
         dopsText.setPosition(100, 100);
 
         timeText.setFont(font);
         timeText.setCharacterSize(30);
         timeText.setOutlineThickness(3);
-        timeText.setOutlineColor(Color(250,149,18));
-        timeText.setFillColor(Color::Black);
-        string timeString = "Time in game: " + to_string(Time) + "seconds.";
+        timeText.setOutlineColor(sf::Color(250,149,18));
+        timeText.setFillColor(sf::Color::Black);
+        std::string timeString = "Time in game: " + std::to_string(Time) + "seconds.";
         timeText.setString(timeString);
         timeText.setPosition(100, 250);
-        bool exitButtonClicked = 0;
-        bool restartButtonClicked = 0;
-        Vector2i mousePos = Mouse::getPosition(window);
-        if (Mouse::isButtonPressed(Mouse::Left)) {
-            if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                exitButtonClicked = 1;
-            }
-            if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                restartButtonClicked = 1;
-            }
-        }
-        
-        if (exitButtonClicked) {
-            state = gameover2;
-            exitButtonClicked = 0;
-        }
-        if (restartButtonClicked) {
-            state = choosecharacter;
-            restartButtonClicked = 0;
-        }
-
-        window.draw(background);
-        window.draw(exitButton); 
-        window.draw(restartButton); 
-        window.draw(dopsText);
         window.draw(timeText);
+
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        sf::Event event;
+        while (window.pollEvent(event)) { 
+            if (event.type == event.MouseButtonPressed  && event.mouseButton.button == sf::Mouse::Left) {
+                if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) 
+                   window.close(); 
+              /*  else if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) //жмых происходит 
+                    state = InGame;  */
+            }
+            else if (event.type == sf::Event::KeyPressed)
+                if (event.key.code == sf::Keyboard::Escape)
+                    window.close();
+        }
         window.display();
     }
 
-    void Setup(){     
-        person.Setup(scx, scy);
-    }
+    void Setup(){person.Setup(scx, scy);}
 
     bool TouchDop(Person& person, Dop& dop){
         double xp = person.X();
@@ -370,7 +361,7 @@ public:
     };
 
     void Life() {
-        Clock clock;
+        sf::Clock clock;
         float doptimer = 0;
         float zachtimer = 0;
         float persontimer = 0;
@@ -381,49 +372,51 @@ public:
         bool Gameover = 0;
         bool zvuk = 0; 
 
-        Texture backgroundGAMETexture;
+        //фон
+        sf::Texture backgroundGAMETexture;
         backgroundGAMETexture.loadFromFile("sprites\\backGame.png");
-        Sprite background(backgroundGAMETexture);
+        sf::Sprite background(backgroundGAMETexture);
         
         //отрисовка жизней
-        Texture heart3;
+        sf::Texture heart3;
         heart3.loadFromFile("sprites\\3hearts.png");
-        Sprite fullheart(heart3);
+        sf::Sprite fullheart(heart3);
 
-        Texture heart2;
+        sf::Texture heart2;
         heart2.loadFromFile("sprites\\2hearts.png");
-        Sprite twoheart(heart2);
+        sf::Sprite twoheart(heart2);
 
-        Texture heart1;
+        sf::Texture heart1;
         heart1.loadFromFile("sprites\\1heart.png");
-        Sprite oneheart(heart1);
+        sf::Sprite oneheart(heart1);
         
-        //допы
-        Texture dooop;
+        //счетчик допов
+        sf::Texture dooop;
         dooop.loadFromFile("sprites\\dop.png");
-        Sprite dooop1(dooop);
+        sf::Sprite dooop1(dooop);
         dooop1.setPosition(250, 40);
         dooop1.setScale(2, 2);
 
-        Text dopsText;
-        Font font;
+        sf::Text dopsText;
+        sf::Font font;
         font.loadFromFile("font\\Trick.ttf");
         dopsText.setFont(font);
         dopsText.setCharacterSize(30);
         dopsText.setOutlineThickness(3);
-        dopsText.setOutlineColor(Color::White);
-        dopsText.setFillColor(Color::Black);
+        dopsText.setOutlineColor(sf::Color::White);
+        dopsText.setFillColor(sf::Color::Black);
         dopsText.setPosition(350, 60);
-
        
-
         while (window.isOpen() && !Gameover)
         {
-            Event event;
+            sf::Event event;
             while (window.pollEvent(event)) {
-                if (event.type == Event::Closed) {
+                if (event.type == sf::Event::Closed) {
                     window.close();
                 }
+                else if (event.type == sf::Event::KeyPressed)
+                    if (event.key.code == sf::Keyboard::Escape)
+                        state=gameover;
             }
             float dt = clock.getElapsedTime().asSeconds();
             clock.restart();
@@ -452,13 +445,13 @@ public:
 
             int touch = TouchBorder(person);
             if (!touch) {
-                if (Keyboard::isKeyPressed(Keyboard::W))
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
                     person.Move(1, dt);
-                if (Keyboard::isKeyPressed(Keyboard::S))
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
                     person.Move(2, dt);
-                if (Keyboard::isKeyPressed(Keyboard::A))
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
                     person.Move(3, dt);
-                if (Keyboard::isKeyPressed(Keyboard::D))
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
                     person.Move(4, dt);
             }
             else if (touch == 1)
@@ -492,14 +485,12 @@ public:
                 oneheart.setScale(0.75, 0.75);
                 window.draw(oneheart);
             }
-
             window.draw(dooop1);
-            
+
             int dopes = person.DOPS();
-            string dopsString = to_string(dopes);
+            std::string dopsString = std::to_string(dopes);
             dopsText.setString(dopsString);
             window.draw(dopsText);
-
             for (int i = 0; i < zachcount; i++) {
                 int typezat = zacheti[i].TYPE();
                 if ((typezat == 1 && zacheti[i].Y() - 20 > 900) ||
@@ -537,7 +528,7 @@ public:
                 window.draw(dops[i].Get());
             }
             window.draw(person.Get());
-            window.display();
+           
 
             if (Time > 5 && persontimer > 8 && Time < 20) {
                 person.SpeedChange(1);
@@ -567,6 +558,8 @@ public:
                 speed_creation -= 0.005;
                 persontimer = 0;
             }
+
+            window.display();
         }
     }
 };

@@ -1,13 +1,12 @@
 #include <SFML/Graphics.hpp>
-using namespace sf;
-using namespace std;
+
 
 class Dop {
 	double x;
 	double y;
 	double time;
-	Texture dop;
-	Sprite sprite;
+	sf::Texture dop;
+	sf::Sprite sprite;
 public:
 	Dop() = default;
 
@@ -40,12 +39,9 @@ public:
 	double X() { return x; };
 	double Y() { return y; };
 
-	Sprite Get()
-	{
-		return sprite;
-	}
+	sf::Sprite Get() { return sprite; };
 };
-//стрелы как надо летят вроде
+
 class Zat {
 	double x = 0;
 	double y = 0;
@@ -53,12 +49,12 @@ class Zat {
 	int speed = 140;
 
 	//для зачета
-	Texture textureUp;
-	Texture textureDown;
-	Texture textureLeft;
-	Texture textureRight;
+	sf::Texture textureUp;
+	sf::Texture textureDown;
+	sf::Texture textureLeft;
+	sf::Texture textureRight;
 
-	Sprite sprite;
+	sf::Sprite sprite;
 public:
 	Zat() = default;
 
@@ -146,11 +142,7 @@ public:
 		sprite.setPosition(x, y);
 	}
 
-	Sprite Get()
-	{
-		return sprite;
-	};
-
+	sf::Sprite Get() { return sprite; };
 	int TYPE() { return type; };
 	double X() { return x; };
 	double Y() { return y; };
