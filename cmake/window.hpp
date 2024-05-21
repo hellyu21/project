@@ -280,12 +280,11 @@ public:
         dopsText.setOutlineThickness(3);
         dopsText.setOutlineColor(sf::Color(250,149,18));
         dopsText.setFillColor(sf::Color::Black);
-        window.draw(dopsText);
-       
         int dops = person.DOPS();
         std::string dopsString = "You have " + std::to_string(dops) + " dop(s).";
         dopsText.setString(dopsString);
         dopsText.setPosition(100, 100);
+        window.draw(dopsText);
 
         timeText.setFont(font);
         timeText.setCharacterSize(30);
@@ -303,8 +302,8 @@ public:
             if (event.type == event.MouseButtonPressed  && event.mouseButton.button == sf::Mouse::Left) {
                 if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) 
                    window.close(); 
-              /*  else if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) //жмых происходит 
-                    state = InGame;  */
+                else if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) //жмых происходит 
+                    state = InGame;  
             }
             else if (event.type == sf::Event::KeyPressed)
                 if (event.key.code == sf::Keyboard::Escape)
