@@ -51,10 +51,6 @@ private:
     
     enum  State { menu, choosecharacter, InGame, gameover};//разные состо€ни€ игры
     State state;
-    /*SoundBuffer buffer;
-    Sound soundEffect;*/
-    
-   
 public:
    
     Game() { 
@@ -235,7 +231,6 @@ public:
                     person.typeCharacter(1);
                     state = InGame;
                 }
-
                 else if (kika.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
                     person.typeCharacter(2);
@@ -300,14 +295,19 @@ public:
         sf::Event event;
         while (window.pollEvent(event)) { 
             if (event.type == event.MouseButtonPressed  && event.mouseButton.button == sf::Mouse::Left) {
-                if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) 
-                   window.close(); 
+                if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                    window.close();
                 else if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) //жмых происходит 
+                    person.typeCharacter(1);
                     state = InGame;  
             }
             else if (event.type == sf::Event::KeyPressed)
+            {
                 if (event.key.code == sf::Keyboard::Escape)
+                {
                     window.close();
+                }            
+            }
         }
         window.display();
     }
@@ -415,7 +415,10 @@ public:
                 }
                 else if (event.type == sf::Event::KeyPressed)
                     if (event.key.code == sf::Keyboard::Escape)
-                        state=gameover;
+                    {
+                        Gameover = 1;
+                        state = gameover;
+                    }
             }
             float dt = clock.getElapsedTime().asSeconds();
             clock.restart();
@@ -423,13 +426,7 @@ public:
             doptimer += dt;
             persontimer += dt;
             zachtimer += dt;
-            //buffer.loadFromFile("sprites\\time_dop.wav");
-            //soundEffect.setBuffer(buffer); 
-            //if (Time == 3 && !zvuk)
-            //{
-            //    soundEffect.play();//не воспроизводитс€..
-            //    zvuk = 1;
-            //}
+
             if (Time > 3 && doptimer > speed_creation && dopcount < 25) {
                 dops[dopcount].Setup();
                 dopcount++;
@@ -502,7 +499,7 @@ public:
                     zachcount--;
                 }
                 if (TouchZat(person, zacheti[i])) {              
-                    zacheti[i] = zacheti[zachcount - 1];
+                    zacheti[i] = zacheti[zachcount - 1]; 
                     typezat = zacheti[zachcount - 1].TYPE();
                     zacheti[zachcount - 1].~Zat();
                     zachcount--;
@@ -557,7 +554,6 @@ public:
                 speed_creation -= 0.005;
                 persontimer = 0;
             }
-
             window.display();
         }
     }
