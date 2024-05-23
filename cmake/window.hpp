@@ -369,12 +369,15 @@ public:
         int dopcount = 0;
         int zachcount = 0;
         bool Gameover = 0;
-        bool zvuk = 0; 
+        bool flag = 1;
 
         //обнуляем допы, сердца, и время
         Time = 0;
         person.nullDop();
         person.nullHearts();
+
+        sf::Music music;
+        music.openFromFile("sprites\\time_dop.wav");
 
         //фон
         sf::Texture backgroundGAMETexture;
@@ -433,6 +436,10 @@ public:
             persontimer += dt;
             zachtimer += dt;
 
+            if (Time > 2.65  && flag) {
+                music.play();
+                flag = 0;
+            }
             if (Time > 3 && doptimer > speed_creation && dopcount < 25) {
                 dops[dopcount].Setup();
                 dopcount++;
