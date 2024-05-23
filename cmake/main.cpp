@@ -6,7 +6,6 @@
 int main()
 {
     Game adventure;
-    Game();
     adventure.run();
     return 0;
 }

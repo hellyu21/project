@@ -54,95 +54,105 @@ class Zat {
 	sf::Texture textureLeft;
 	sf::Texture textureRight;
 
-	sf::Sprite sprite;
+	sf::Sprite* sprite = nullptr;
 public:
-	Zat() = default;
-
-	~Zat() = default;
-
-	void Setup() {
+	Zat()
+	{
 		textureUp.loadFromFile("sprites\\ZACHup.png");
 		textureDown.loadFromFile("sprites\\ZACHdown.png");
 		textureLeft.loadFromFile("sprites\\ZACHleft.png");
 		textureRight.loadFromFile("sprites\\ZACHRight.png");
+	}
+
+	Zat(const Zat& other) = delete;
+
+
+	~Zat()
+	{
+		if (sprite != nullptr)
+			delete sprite;
+	}
+
+	void Setup() {
+		if (sprite != nullptr)
+			delete sprite;
+		sprite = new sf::Sprite;
 		type = rand() % (4 - 1 + 1) + 1;
 		if (type == 1) {//сверху
 			x = rand() % (1580 - 20 + 1) + 20;
-			sprite.setTexture(textureDown);
-			sprite.setOrigin(textureDown.getSize().x / 2, textureDown.getSize().y/2);
-			sprite.setScale(2, 2);
+			y = 0;
+			sprite->setTexture(textureDown);
+			sprite->setOrigin(textureDown.getSize().x / 2, textureDown.getSize().y/2);
+			sprite->setScale(2, 2);
 			
 		}
 		if (type == 2) {//снизу
 			x = rand() % (1580 - 20 + 1) + 20;
 			y = 900;
-			sprite.setTexture(textureUp);
-			sprite.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y/2);
-			sprite.setScale(2, 2);
+			sprite->setTexture(textureUp);
+			sprite->setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y/2);
+			sprite->setScale(2, 2);
 		}
 		if (type == 3) {//слева
+			x = 0;
 			y = rand() % (880 - 20 + 1) + 20;
-			sprite.setTexture(textureRight);
-			sprite.setOrigin(textureRight.getSize().x / 2, textureRight.getSize().y/2);
-			sprite.setScale(2, 2);
+			sprite->setTexture(textureRight);
+			sprite->setOrigin(textureRight.getSize().x / 2, textureRight.getSize().y/2);
+			sprite->setScale(2, 2);
 		}
 		if (type == 4) {//справа
 			y = rand() % (880 - 20 + 1) + 20;
 			x = 1600;
-			sprite.setTexture(textureLeft);
-			sprite.setOrigin(textureLeft.getSize().x / 2, textureLeft.getSize().y/2);
-			sprite.setScale(2, 2);
+			sprite->setTexture(textureLeft);
+			sprite->setOrigin(textureLeft.getSize().x / 2, textureLeft.getSize().y/2);
+			sprite->setScale(2, 2);
 		}
-		sprite.setPosition(x, y);
+		sprite->setPosition(x, y);
 	}
 
-	Zat operator=(Zat gotzat) {
+	Zat& operator=(Zat& gotzat)
+	{
 		x = gotzat.x;
 		y = gotzat.y;
 		speed = gotzat.speed;
 		type = gotzat.type;
-		textureUp.loadFromFile("sprites\\ZACHup.png");
-		textureDown.loadFromFile("sprites\\ZACHdown.png");
-		textureLeft.loadFromFile("sprites\\ZACHleft.png");
-		textureRight.loadFromFile("sprites\\ZACHRight.png");
-		if (type == 1)
-			sprite.setTexture(textureDown);
-		if (type == 2) 
-			sprite.setTexture(textureUp);
-		if (type == 3)
-			sprite.setTexture(textureRight);
-		if (type == 4) 
-			sprite.setTexture(textureLeft);
+		textureUp = gotzat.textureUp;
+		textureDown = gotzat.textureDown;
+		textureLeft = gotzat.textureLeft;
+		textureRight = gotzat.textureRight;
+
+		sprite = new sf::Sprite;
+		*sprite = *(gotzat.sprite);
 		return *this;
 	}
 
 	void Move(int type, double dt) {
 		if (type == 1)//сверху вниз
 		{
-			sprite.setTexture(textureDown);
+			sprite->setTexture(textureDown);
 			y += speed * dt;
 		}
 		if (type == 2)//снизу вверх
 		{
-			sprite.setTexture(textureUp);
+			sprite->setTexture(textureUp);
 			y -= speed * dt;
 		}
 		if (type == 3)//слева направо
 		{
-			sprite.setTexture(textureRight);
+			sprite->setTexture(textureRight);
 			x += speed * dt;
 		}
 			
 		if (type == 4)//справа налево
 		{
-			sprite.setTexture(textureLeft);
+			sprite->setTexture(textureLeft);
 			x -= speed * dt;
 		}
 			
-		sprite.setPosition(x, y);
+		sprite->setPosition(x, y);
 	}
 
-	sf::Sprite Get() { return sprite; };
+	sf::Sprite* Get() { return sprite; };
 	int TYPE() { return type; };
 	double X() { return x; };
 	double Y() { return y; };

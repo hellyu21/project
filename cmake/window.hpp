@@ -136,7 +136,7 @@ public:
         spaceText.setFillColor(sf::Color::Black);
         spaceText.setOutlineThickness(10);
         spaceText.setOutlineColor(sf::Color(250,149,18));
-        std:: string spaceString = "Press SPACE to start";
+        std:: string spaceString = "HOLD SPACE to start";
         spaceText.setString(spaceString);
         spaceText.setPosition(800, 800);
         window.draw(spaceText);
@@ -219,7 +219,7 @@ public:
            kikat.loadFromFile("sprites\\KIKAmenu.png");//Кика
            sf::Sprite kika(kikat);
            kika.setPosition(850, 250);
-           kika.setScale(5, 5);
+           kika.setScale(5.5, 5.5);
            window.draw(kika);
          
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -286,7 +286,8 @@ public:
         timeText.setOutlineThickness(3);
         timeText.setOutlineColor(sf::Color(250,149,18));
         timeText.setFillColor(sf::Color::Black);
-        std::string timeString = "Time in game: " + std::to_string(Time) + "seconds.";
+        int timeIn = round(Time);
+        std::string timeString = "Time in game: " + std::to_string(timeIn) + " seconds.";
         timeText.setString(timeString);
         timeText.setPosition(100, 250);
         window.draw(timeText);
@@ -298,8 +299,7 @@ public:
                 if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
                     window.close();
                 else if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) //жмых происходит 
-                    person.typeCharacter(1);
-                    state = InGame;  
+                    state = choosecharacter;
             }
             else if (event.type == sf::Event::KeyPressed)
             {
@@ -371,6 +371,11 @@ public:
         bool Gameover = 0;
         bool zvuk = 0; 
 
+        //обнуляем допы, сердца, и время
+        Time = 0;
+        person.nullDop();
+        person.nullHearts();
+
         //фон
         sf::Texture backgroundGAMETexture;
         backgroundGAMETexture.loadFromFile("sprites\\backGame.png");
@@ -420,6 +425,7 @@ public:
                         state = gameover;
                     }
             }
+
             float dt = clock.getElapsedTime().asSeconds();
             clock.restart();
             Time += dt;
@@ -494,14 +500,13 @@ public:
                     (typezat == 3 && zacheti[i].X() - 20 > 1600) ||
                     (typezat == 4 && zacheti[i].X() + 20 < 0)) {
                     zacheti[i] = zacheti[zachcount - 1];
-                    typezat = zacheti[zachcount - 1].TYPE();
-                    zacheti[zachcount - 1].~Zat();
                     zachcount--;
                 }
-                if (TouchZat(person, zacheti[i])) {              
-                    zacheti[i] = zacheti[zachcount - 1]; 
-                    typezat = zacheti[zachcount - 1].TYPE();
-                    zacheti[zachcount - 1].~Zat();
+            }
+
+            for (int i = 0; i < zachcount; i++) {
+                if (TouchZat(person, zacheti[i])) {
+                    zacheti[i] = zacheti[zachcount - 1];
                     zachcount--;
                     person.Minusheart();
                     if (person.Hearts() == 0) {
@@ -509,14 +514,17 @@ public:
                         Gameover = 1;
                     }
                 }
+            }
+
+            for (int i = 0; i < zachcount; i++) {
+                int typezat = zacheti[i].TYPE();
                 zacheti[i].Move(typezat, dt);
-                window.draw(zacheti[i].Get());
+                window.draw(*zacheti[i].Get());
             }
 
             for (int i = 0; i < dopcount; i++) {
                 if (TouchDop(person, dops[i])) {
                     dops[i] = dops[dopcount-1];
-                    dops[dopcount - 1].~Dop();
                     dopcount--;
                     person.plusDop();
                 }

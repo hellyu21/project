@@ -90,6 +90,10 @@ public:
 	void plusDop() { dops++; }
 	void Minusheart() { hearts--; }
 
+	void nullDop() {dops = 0;}
+	void nullHearts() { hearts = 3; }
+
+
 	void typeCharacter(int i) {
 		if (i == 1)
 			selectedCharacter = CHIKA;
