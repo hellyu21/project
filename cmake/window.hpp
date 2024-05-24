@@ -9,7 +9,6 @@
 #include "person.hpp"
 #include "dop_za4et.hpp"
 
-
 int TouchBorder(Person& obj) {
     double x = obj.X();
     double y = obj.Y();
@@ -44,7 +43,7 @@ private:
     enum  State { menu, choosecharacter, InGame, gameover};//разные состояния игры
     State state;
 public:
-   
+ 
     Game() { 
         srand(time(0));
         window.create(sf::VideoMode(scx, scy), "Incredible adventure of a student!");
@@ -67,7 +66,7 @@ public:
         }
     }
     
-    void update() {//смена режима без закрытие окна
+    void update() {//смена режима без закрытия окна
         switch (state) {
         case menu:
             Menu();
@@ -128,7 +127,7 @@ public:
         spaceText.setFillColor(sf::Color::Black);
         spaceText.setOutlineThickness(10);
         spaceText.setOutlineColor(sf::Color(250,149,18));
-        std:: string spaceString = "HOLD SPACE to start";
+        std:: string spaceString = "Press SPACE to start";
         spaceText.setString(spaceString);
         spaceText.setPosition(800, 800);
         window.draw(spaceText);
@@ -142,16 +141,16 @@ public:
                 else if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
                    window.close();
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
-                person.typeCharacter(1);//персонаж по умолчанию
-                state = InGame;
-            }
-            else if (event.type == sf::Event::KeyPressed)
-                if (event.key.code == sf::Keyboard::Escape)
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Space) {
+                    person.typeCharacter(1);//персонаж по умолчанию
+                    state = InGame;
+                }
+                if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
-        }
-       
-       
+                }
+            }
+        }       
         window.display();
     };
 
@@ -478,7 +477,6 @@ public:
                     if (event.key.code == sf::Keyboard::Escape)
                     {
                         Gameover = 1;
-                        state = gameover;
                         Records();
                     }
             }
@@ -624,7 +622,7 @@ public:
                 speed_creation -= 0.005;
                 persontimer = 0;
             }
-            window.display();
+            window.display();  
         }
     }
 };
