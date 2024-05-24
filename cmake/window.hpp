@@ -2,24 +2,10 @@
 #include <SFML/Audio.hpp>
 #include <Windows.h>
 #include <iostream>
+#include <fstream>
 #include "person.hpp"
 #include "dop_za4et.hpp"
 
-//ошибки:
-//если рестартишь игру,почему то вместо фона растянут твой персонаж
-//при смерти все ломается.
-//если игра длится дольше N времени,все ломается(но мб это из-за текстур,опять же.Все таки ошибки только с ними):(
-
-//таски:
-//звук воспроизвести (делала все как в 4 лабе, но почему то тут не хочет воспроизводиться звук)
-
-
-//ДОСТИЖЕНИЯ:
-//меню работает как надо,
-// выбор персонажа делается
-// игра играется
-// итоги игры выводятся корректно(кол-во допов и время в игре),  ---теперь нет,игра ломается
-// все кнопки во всех состояниях игры работают
 
 int TouchBorder(Person& obj) {
     double x = obj.X();
@@ -292,13 +278,58 @@ public:
         timeText.setPosition(100, 250);
         window.draw(timeText);
 
+        std::ifstream in("sprites\\Records.txt");
+        if (!in.is_open()) {
+            std::cout << "Error file" << std::endl;
+        }
+        int* records = new int[10];
+        int n;
+        in >> n;
+        for (int i = 0; i < n; i++)
+            in >> records[i];
+
+        int curdop = person.DOPS();
+        records[n] = curdop;
+        for (int i = n; i >= 1; i--) {
+            if (records[i-1] < records[i]) {
+                int tmp = records[i];
+                records[i] = records[i - 1];
+                records[i - 1] = tmp;
+            }
+        }
+
+        if (n != 10)
+            n++;
+
+        sf::Text recordText;
+        recordText.setFont(font);
+        recordText.setCharacterSize(30);
+        recordText.setOutlineThickness(3);
+        recordText.setOutlineColor(sf::Color(250, 149, 18));
+        recordText.setFillColor(sf::Color::Black);
+        std::string recordString = "1 ";
+        for (int i = 0; i < n; i++) {
+            recordString += std::to_string(records[i]) + "\n" + std::to_string(i + 2) + " ";
+        }
+        //recordString += std::to_string(records[9]);
+
+        recordText.setString(recordString);
+        recordText.setPosition(900, 100);
+        window.draw(recordText);
+        in.close();
+
+        std::ofstream out("sprites\\Records.txt");
+        out << n << "\n";
+        for (int i = 0; i < n; i++)
+            out << records[i] << "\n";
+
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event)) { 
             if (event.type == event.MouseButtonPressed  && event.mouseButton.button == sf::Mouse::Left) {
                 if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
                     window.close();
-                else if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) //жмых происходит 
+                else if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) 
                     state = choosecharacter;
             }
             else if (event.type == sf::Event::KeyPressed)
@@ -375,6 +406,9 @@ public:
         Time = 0;
         person.nullDop();
         person.nullHearts();
+
+        int speed_creation = 5;
+        int speed_zach = 140;
 
         sf::Music music;
         music.openFromFile("sprites\\time_dop.wav");

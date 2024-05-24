@@ -11,10 +11,15 @@ public:
 	Dop() = default;
 
 	void Setup() {
-		x = rand() % (1580 - 20 + 1) + 20;
-		y = rand() % (880 - 20 + 1) + 20;
+		x = rand() % (1540 - 60 + 1) + 60;
+		y = rand() % (820 - 80 + 1) + 80;
+		while (0 < x && x < 400 && 0 < y && y < 180) {
+			x = rand() % (1540 - 60 + 1) + 60;
+			y = rand() % (820 - 80 + 1) + 80;
+		}
 		dop.loadFromFile("sprites\\dop.png");
 		sprite.setTexture(dop);
+		sprite.setScale(1.2, 1.2);
 		sprite.setOrigin(dop.getSize().x / 2, dop.getSize().y/2);
 		sprite.setPosition(x, y);
 	}
@@ -83,7 +88,7 @@ public:
 			y = 0;
 			sprite->setTexture(textureDown);
 			sprite->setOrigin(textureDown.getSize().x / 2, textureDown.getSize().y/2);
-			sprite->setScale(2, 2);
+			sprite->setScale(2.3, 2.3);
 			
 		}
 		if (type == 2) {//снизу
@@ -91,21 +96,21 @@ public:
 			y = 900;
 			sprite->setTexture(textureUp);
 			sprite->setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y/2);
-			sprite->setScale(2, 2);
+			sprite->setScale(2.3, 2.3);
 		}
 		if (type == 3) {//слева
 			x = 0;
 			y = rand() % (880 - 20 + 1) + 20;
 			sprite->setTexture(textureRight);
 			sprite->setOrigin(textureRight.getSize().x / 2, textureRight.getSize().y/2);
-			sprite->setScale(2, 2);
+			sprite->setScale(2.3, 2.3);
 		}
 		if (type == 4) {//справа
 			y = rand() % (880 - 20 + 1) + 20;
 			x = 1600;
 			sprite->setTexture(textureLeft);
 			sprite->setOrigin(textureLeft.getSize().x / 2, textureLeft.getSize().y/2);
-			sprite->setScale(2, 2);
+			sprite->setScale(2.3, 2.3);
 		}
 		sprite->setPosition(x, y);
 	}
