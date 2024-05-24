@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <ctime>
 #include <sstream>
+#include <string>
 #include "person.hpp"
 #include "dop_za4et.hpp"
 
@@ -34,7 +35,7 @@ private:
     float Time = 0;
     int scx = 1600;
     int scy = 900;
-    int speed_creation = 5;
+    float speed_creation = 5;
     int speed_zach = 140;
 
     std::string records[11];
@@ -289,7 +290,7 @@ public:
         recordText.setOutlineThickness(3);
         recordText.setOutlineColor(sf::Color(250, 149, 18));
         recordText.setFillColor(sf::Color::Black);
-        std::string recordString = "1. ";
+        std::string recordString = "RECORDS\n1. ";
         for (int i = 0; i < 9; i++) {
             recordString += records[i] + "\n" + std::to_string(i + 2) + ". ";
         }
@@ -366,6 +367,19 @@ public:
             return false;
     };
 
+    int count(std::string str) {
+        int n = 0;
+        for (int i = 0; i < str.size(); i++)
+            if (str[i] == '\ ')
+                n = i;
+        std::string tmp = "";
+        for (int i = 0; i < n + 1; i++) {
+            tmp += str[i];
+        }
+        n = atoi(tmp.c_str());
+        return n;
+    }
+
     void Records() {
         std::ifstream in("sprites\\Records.txt");
         if (!in.is_open()) {
@@ -390,7 +404,9 @@ public:
         auto str = oss.str();
         records[n] = std::to_string(curdop) + " " + str;
         for (int i = n; i >= 1; i--) {
-            if (records[i - 1][0] < records[i][0]) {
+            int dopsup = count(records[i-1]);
+            int dopsdown = count(records[i]);
+            if (dopsup < dopsdown) {
                 std::string tmp = records[i];
                 records[i] = records[i - 1];
                 records[i - 1] = tmp;
@@ -419,14 +435,15 @@ public:
         int zachcount = 0;
         bool Gameover = 0;
         bool flag = 1;
+        int LastTime = 0;
 
         //обнуляем допы, сердца, и время
         Time = 0;
         person.nullDop();
         person.nullHearts();
 
-        int speed_creation = 5;
-        int speed_zach = 140;
+        float speed_creation = 5;
+        int speed_zach = 200;
 
         sf::Music music;
         music.openFromFile("sprites\\time_dop.wav");
@@ -594,32 +611,24 @@ public:
             window.draw(person.Get());
            
 
-            if (Time > 5 && persontimer > 8 && Time < 20) {
-                person.SpeedChange(1);
-                speed_zach += 2;
+            if (Time > 5 && persontimer > 5 && Time < 20) {
+                person.SpeedChange(4);
+                speed_zach += 8;
                 for (int i = 0; i < zachcount; i++) {
                     zacheti[i].setSpeed(speed_zach);
                 }
                 persontimer = 0;
             }
 
-            if (Time >= 20 && persontimer > 8 && Time < 40) {
-                person.SpeedChange(3);
-                speed_zach += 3;
+            if (Time >= 20 && persontimer > 2 && LastTime != round(Time)) {
+                LastTime = round(Time);
+                person.SpeedChange(4);
+                speed_zach += 5;
                 for (int i = 0; i < zachcount; i++) {
                     zacheti[i].setSpeed(speed_zach);
                 }
-                speed_creation -= 0.001;
-                persontimer = 0;
-            }
-
-            if (Time >= 40 && persontimer > 7 && Time < 60) {
-                person.SpeedChange(3);
-                speed_zach += 3;
-                for (int i = 0; i < zachcount; i++) {
-                    zacheti[i].setSpeed(speed_zach);
-                }
-                speed_creation -= 0.005;
+                if (speed_creation > 1)
+                    speed_creation -= 0.2;
                 persontimer = 0;
             }
             window.display();  
