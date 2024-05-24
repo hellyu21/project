@@ -3,6 +3,9 @@
 #include <Windows.h>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
+#include <ctime>
+#include <sstream>
 #include "person.hpp"
 #include "dop_za4et.hpp"
 
@@ -34,6 +37,9 @@ private:
     int scy = 900;
     int speed_creation = 5;
     int speed_zach = 140;
+
+    std::string records[11];
+    int n = 0;
     
     enum  State { menu, choosecharacter, InGame, gameover};//разные состояния игры
     State state;
@@ -278,50 +284,21 @@ public:
         timeText.setPosition(100, 250);
         window.draw(timeText);
 
-        std::ifstream in("sprites\\Records.txt");
-        if (!in.is_open()) {
-            std::cout << "Error file" << std::endl;
-        }
-        int* records = new int[10];
-        int n;
-        in >> n;
-        for (int i = 0; i < n; i++)
-            in >> records[i];
-
-        int curdop = person.DOPS();
-        records[n] = curdop;
-        for (int i = n; i >= 1; i--) {
-            if (records[i-1] < records[i]) {
-                int tmp = records[i];
-                records[i] = records[i - 1];
-                records[i - 1] = tmp;
-            }
-        }
-
-        if (n != 10)
-            n++;
-
         sf::Text recordText;
         recordText.setFont(font);
         recordText.setCharacterSize(30);
         recordText.setOutlineThickness(3);
         recordText.setOutlineColor(sf::Color(250, 149, 18));
         recordText.setFillColor(sf::Color::Black);
-        std::string recordString = "1 ";
-        for (int i = 0; i < n; i++) {
-            recordString += std::to_string(records[i]) + "\n" + std::to_string(i + 2) + " ";
+        std::string recordString = "1. ";
+        for (int i = 0; i < 9; i++) {
+            recordString += records[i] + "\n" + std::to_string(i + 2) + ". ";
         }
-        //recordString += std::to_string(records[9]);
+        recordString += records[9];
 
         recordText.setString(recordString);
         recordText.setPosition(900, 100);
         window.draw(recordText);
-        in.close();
-
-        std::ofstream out("sprites\\Records.txt");
-        out << n << "\n";
-        for (int i = 0; i < n; i++)
-            out << records[i] << "\n";
 
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Event event;
@@ -389,6 +366,48 @@ public:
         else
             return false;
     };
+
+    void Records() {
+        std::ifstream in("sprites\\Records.txt");
+        if (!in.is_open()) {
+            std::cout << "Error file" << std::endl;
+        }
+
+        in >> n;
+        std::string tmp;
+        getline(in, tmp);
+        for (int i = 0; i < n; i++)
+            getline(in, records[i]);
+
+        if (n != 10) 
+            for (int i = n; i < 10; i++)
+                records[i] = "0";
+
+        int curdop = person.DOPS(); 
+        auto t = std::time(nullptr);
+        auto tm = *std::localtime(&t);
+        std::ostringstream oss;
+        oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+        auto str = oss.str();
+        records[n] = std::to_string(curdop) + " " + str;
+        for (int i = n; i >= 1; i--) {
+            if (records[i - 1][0] < records[i][0]) {
+                std::string tmp = records[i];
+                records[i] = records[i - 1];
+                records[i - 1] = tmp;
+            }
+        }
+
+        n = 10;
+        in.close();
+
+
+        std::ofstream out("sprites\\Records.txt");
+        out << n << "\n";
+        for (int i = 0; i < n; i++)
+            out << records[i] << "\n";
+        out.close();
+    }
 
     void Life() {
         sf::Clock clock;
@@ -460,6 +479,7 @@ public:
                     {
                         Gameover = 1;
                         state = gameover;
+                        Records();
                     }
             }
 
@@ -553,6 +573,7 @@ public:
                     if (person.Hearts() == 0) {
                         window.clear();
                         Gameover = 1;
+                        Records();
                     }
                 }
             }
