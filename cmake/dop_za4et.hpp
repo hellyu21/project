@@ -51,7 +51,7 @@ class Zat {
 	double x = 0;
 	double y = 0;
 	int type;
-	int speed = 140;
+	int speed = 200;
 
 	//для зачета
 	sf::Texture textureUp;

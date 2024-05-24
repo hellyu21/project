@@ -4,7 +4,7 @@
 class Person{
 	double x;
 	double y;
-	double speed = 140;
+	double speed = 200;
 	
 	int hearts = 3;
 	int dops = 0;
