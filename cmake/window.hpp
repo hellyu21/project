@@ -129,7 +129,7 @@ public:
         spaceText.setFillColor(sf::Color::Black);
         spaceText.setOutlineThickness(10);
         spaceText.setOutlineColor(sf::Color(250,149,18));
-        std:: string spaceString = "HOLD SPACE to start";
+        std:: string spaceString = "Press SPACE to start";
         spaceText.setString(spaceString);
         spaceText.setPosition(800, 800);
         window.draw(spaceText);
@@ -141,18 +141,18 @@ public:
                 if (startButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
                     state = choosecharacter;
                 else if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
-                   window.close();
-            }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
-                person.typeCharacter(1);//персонаж по умолчанию
-                state = InGame;
-            }
-            else if (event.type == sf::Event::KeyPressed)
-                if (event.key.code == sf::Keyboard::Escape)
                     window.close();
+            }
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Space) {
+                    state = choosecharacter;
+                }
+                if (event.key.code == sf::Keyboard::Escape) {
+                    window.close();
+                }
+            }
         }
-       
-       
+      
         window.display();
     };
 
