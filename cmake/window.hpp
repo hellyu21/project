@@ -137,13 +137,19 @@ public:
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+            if (event.type == sf::Event::Closed) 
+            {
+                window.close();
+            }
+            else if (event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+            {
                 if (startButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
                     state = choosecharacter;
                 else if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
                     window.close();
             }
-            if (event.type == sf::Event::KeyPressed) {
+            else if (event.type == sf::Event::KeyPressed)
+            {
                 if (event.key.code == sf::Keyboard::Space) {
                     state = choosecharacter;
                 }
@@ -218,7 +224,11 @@ public:
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+            else if (event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) 
+            {
                 if (chika.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
                     person.typeCharacter(1);
@@ -327,7 +337,11 @@ public:
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event)) { 
-            if (event.type == event.MouseButtonPressed  && event.mouseButton.button == sf::Mouse::Left) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+            else if (event.type == event.MouseButtonPressed  && event.mouseButton.button == sf::Mouse::Left) 
+            { 
                 if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
                     window.close();
                 else if (restartButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) 
@@ -523,7 +537,7 @@ public:
                     if (event.key.code == sf::Keyboard::Escape)
                     {
                         Gameover = 1;
-                        state = gameover;
+                       // state = gameover;//и так после life переход будет..
                         sound.stop();
                         Records();
                     }
