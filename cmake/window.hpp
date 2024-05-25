@@ -270,6 +270,18 @@ public:
         dopsText.setFillColor(sf::Color::Black);
         int dops = person.DOPS();
         std::string dopsString = "You have " + std::to_string(dops) + " dop(s).";
+        if (dops == 0)
+            dopsString += "\nIt's sad :(";
+        if (0 < dops && dops < 8)
+            dopsString += "\nIt's bad -_-";
+        if (8 <= dops && dops < 18)
+            dopsString += "\nNot bad :/";
+        if (18 <= dops && dops < 30)
+            dopsString += "\nPretty good :)";
+        if (30 <= dops && dops < 50)
+            dopsString += "\nGreat :3";
+        if (50 <= dops)
+            dopsString += "\nInsane!!! ()-()";
         dopsText.setString(dopsString);
         dopsText.setPosition(100, 100);
         window.draw(dopsText);
@@ -300,6 +312,17 @@ public:
         recordText.setString(recordString);
         recordText.setPosition(900, 100);
         window.draw(recordText);
+
+        sf::Text secret;
+        secret.setFont(font);
+        secret.setCharacterSize(15);
+        secret.setOutlineThickness(3);
+        secret.setOutlineColor(sf::Color(250, 149, 18));
+        secret.setFillColor(sf::Color::Black);
+        std::string secretstr = "In game -> press space";
+        secret.setString(secretstr);
+        secret.setPosition(1350, 870);
+        window.draw(secret);
 
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Event event;
@@ -430,6 +453,7 @@ public:
         float doptimer = 0;
         float zachtimer = 0;
         float persontimer = 0;
+        float backtimer = 0;
         Dop dops[25];
         Zat zacheti[15];
         int dopcount = 0;
@@ -442,12 +466,16 @@ public:
         Time = 0;
         person.nullDop();
         person.nullHearts();
+        person.defSpeed();
 
         float speed_creation = 5;
         int speed_zach = 200;
 
         sf::Music music;
         music.openFromFile("sprites\\time_dop.wav");
+        sf::Music sound;
+        sound.openFromFile("sprites\\MV.wav");
+        sound.setLoop(true);
 
         //фон
         sf::Texture backgroundGAMETexture;
@@ -496,8 +524,16 @@ public:
                     {
                         Gameover = 1;
                         state = gameover;
+                        sound.stop();
                         Records();
                     }
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                person.typeCharacter(3);
+                person.Setup(scx, scy);
+                sound.play();
+                window.draw(person.Get());
             }
 
             float dt = clock.getElapsedTime().asSeconds();
@@ -506,6 +542,7 @@ public:
             doptimer += dt;
             persontimer += dt;
             zachtimer += dt;
+            backtimer += dt;
 
             if (Time > 2.65  && flag) {
                 music.play();
@@ -544,6 +581,13 @@ public:
                 person.Move(3, dt);
 
             window.clear();
+            if (person.typeCharacter() == 3 && backtimer > 0.4) {
+                int r = rand() % (250 - 0 + 1) + 0;
+                int g = rand() % (250 - 0 + 1) + 0;
+                int b = rand() % (250 - 0 + 1) + 0;
+                background.setColor(sf::Color(r, g, b));
+                backtimer = 0;
+            }
             window.draw(background);
 
             int hearts = person.Hearts();
@@ -590,6 +634,7 @@ public:
                     if (person.Hearts() == 0) {
                         window.clear();
                         Gameover = 1;
+                        sound.stop();
                         Records();
                     }
                 }

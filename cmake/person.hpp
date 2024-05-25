@@ -17,8 +17,9 @@ class Person{
 	sf::Texture textureRight;
 	sf::Sprite spriteChika;
 	sf::Sprite spriteKika;
+	sf::Sprite spriteMV;
 
-	enum Character { CHIKA, KIKA };
+	enum Character { CHIKA, KIKA, MV};
 	Character selectedCharacter;
 public:
 	Person() = default;
@@ -51,6 +52,17 @@ public:
 			spriteKika.setOrigin(menu.getSize().x / 2, menu.getSize().y / 2);
 			spriteKika.setScale(2, 2);
 			spriteKika.setPosition(x, y);
+			break;
+		case MV:
+			textureUp.loadFromFile("sprites\\MVstraight.png");
+			textureDown.loadFromFile("sprites\\MVback.png");
+			textureLeft.loadFromFile("sprites\\MVleft.png");
+			textureRight.loadFromFile("sprites\\MVright.png");
+
+			spriteMV.setTexture(textureUp);
+			spriteMV.setOrigin(textureUp.getSize().x / 2, textureUp.getSize().y / 2);
+			spriteMV.setScale(2.5, 2.5);
+			spriteMV.setPosition(x, y);
 			break;
 		}
 
@@ -110,6 +122,29 @@ public:
 			}
 			spriteKika.setPosition(x, y);
 			break;
+		case MV:
+			if (i == 1)//up
+			{
+				spriteMV.setTexture(textureDown);
+				y -= speed * dt;
+			}
+			else if (i == 2) //down
+			{
+				spriteMV.setTexture(textureUp);
+				y += speed * dt;
+			}
+			else if (i == 3) //left
+			{
+				spriteMV.setTexture(textureLeft);
+				x -= speed * dt;
+			}
+			else if (i == 4) //right
+			{
+				spriteMV.setTexture(textureRight);
+				x += speed * dt;
+			}
+			spriteMV.setPosition(x, y);
+			break;
 		}
 	}
 
@@ -126,13 +161,28 @@ public:
 
 	void nullDop() {dops = 0;}
 	void nullHearts() { hearts = 3; }
+	void defSpeed() { speed = 200; }
 
-
+	int typeCharacter() {
+		switch (selectedCharacter) {
+		case CHIKA:
+			return 1;
+			break;
+		case KIKA:
+			return 2;
+			break;
+		case MV:
+			return 3;
+			break;
+		}
+	}
 	void typeCharacter(int i) {
 		if (i == 1)
 			selectedCharacter = CHIKA;
 		if (i == 2)
 			selectedCharacter = KIKA;
+		if (i == 3)
+			selectedCharacter = MV;
 	}
 
 	sf::Sprite Get(){ 
@@ -142,6 +192,9 @@ public:
 			break;
 		case KIKA:
 			return spriteKika;
+			break;
+		case MV:
+			return spriteMV;
 			break;
 		}
 	}
