@@ -53,6 +53,7 @@ class Zat {
 	int type;
 	int speed = 200;
 
+	//для зачета
 	sf::Texture textureUp;
 	sf::Texture textureDown;
 	sf::Texture textureLeft;
