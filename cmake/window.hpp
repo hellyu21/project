@@ -1,3 +1,4 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <Windows.h>
@@ -30,7 +31,7 @@ int TouchBorder(Person& obj) {
 class Game {
 private:
     sf::RenderWindow window;
-    Person person;
+    Chika person;
     Zat zat;
     Dop dop2;
     float Time = 0;
@@ -231,12 +232,12 @@ public:
             {
                 if (chika.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
-                    person.typeCharacter(1);
+                    //person.typeCharacter(1);
                     state = InGame;
                 }
                 else if (kika.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
-                    person.typeCharacter(2);
+                    //person.typeCharacter(2);
                     state = InGame;
                 }
             }
@@ -467,6 +468,7 @@ public:
         float doptimer = 0;
         float zachtimer = 0;
         float persontimer = 0;
+        float steptimer = 0;
         float backtimer = 0;
         Dop dops[25];
         Zat zacheti[15];
@@ -537,14 +539,13 @@ public:
                     if (event.key.code == sf::Keyboard::Escape)
                     {
                         Gameover = 1;
-                       // state = gameover;//и так после life переход будет..
                         sound.stop();
                         Records();
                     }
             }
 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-                person.typeCharacter(3);
+                //person.typeCharacter(3);
                 person.Setup(scx, scy);
                 sound.play();
                 window.draw(person.Get());
@@ -557,6 +558,7 @@ public:
             persontimer += dt;
             zachtimer += dt;
             backtimer += dt;
+            steptimer += dt;
 
             if (Time > 2.65  && flag) {
                 music.play();
@@ -577,25 +579,25 @@ public:
             int touch = TouchBorder(person);
             if (!touch) {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-                    person.Move(1, dt);
+                    person.Move(1, dt, steptimer);
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-                    person.Move(2, dt);
+                    person.Move(2, dt, steptimer);
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-                    person.Move(3, dt);
+                    person.Move(3, dt, steptimer);
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-                    person.Move(4, dt);
+                    person.Move(4, dt, steptimer);
             }
             else if (touch == 1)
-                person.Move(2, dt);
+                person.Move(2, dt, steptimer);
             else if (touch == 2)
-                person.Move(1, dt);
+                person.Move(1, dt, steptimer);
             else if (touch == 3)
-                person.Move(4, dt);
+                person.Move(4, dt, steptimer);
             else if (touch == 4)
-                person.Move(3, dt);
+                person.Move(3, dt, steptimer);
 
             window.clear();
-            if (person.typeCharacter() == 3 && backtimer > 0.4) {
+            if (/*person.typeCharacter() == 3 && */backtimer > 0.4) {
                 int r = rand() % (250 - 0 + 1) + 0;
                 int g = rand() % (250 - 0 + 1) + 0;
                 int b = rand() % (250 - 0 + 1) + 0;

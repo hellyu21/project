@@ -1,13 +1,16 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
 class Person{
+protected:
 	double x;
 	double y;
 	double speed = 200;
 	
 	int hearts = 3;
 	int dops = 0;
+	int way = 1;
 
 	//спрайты
 	sf::Texture menu;
@@ -15,16 +18,14 @@ class Person{
 	sf::Texture textureDown;
 	sf::Texture textureLeft;
 	sf::Texture textureRight;
-	sf::Sprite spriteChika;
-	sf::Sprite spriteKika;
-	sf::Sprite spriteMV;
-
-	enum Character { CHIKA, KIKA, MV};
-	Character selectedCharacter;
+	sf::Sprite sprite;
 public:
 	Person() = default;
 
-	void Setup(double scx, double scy) {
+	Person(const Person &other) = default;
+
+	virtual void Setup(double scx, double scy) = 0;
+	/*{
 		x = scx / 2;
 		y = scy / 2;
 
@@ -66,7 +67,7 @@ public:
 			break;
 		}
 
-	}
+	}*/
 
 	~Person() = default;
 	
@@ -74,85 +75,85 @@ public:
 		speed += delta;
 	}
 
-	void Move(int i, double dt) {
-		switch (selectedCharacter) {
-		case CHIKA:
-			if (i == 1)//up
-			{
-				spriteChika.setTexture(textureDown);
-				y -= speed * dt;
-			}
-			else if (i == 2) //down
-			{
-				spriteChika.setTexture(textureUp);
-				y += speed * dt;
-			}
-			else if (i == 3) //left
-			{
-				spriteChika.setTexture(textureLeft);
-				x -= speed * dt;
-			}
-			else if (i == 4) //right
-			{
-				spriteChika.setTexture(textureRight);
-				x += speed * dt;
-			}
-			spriteChika.setPosition(x, y);
-			break;
-		case KIKA:
-			if (i == 1)//up
-			{
-				spriteKika.setTexture(textureDown);
-				y -= speed * dt;
-			}
-			else if (i == 2) //down
-			{
-				spriteKika.setTexture(textureUp);
-				y += speed * dt;
-			}
-			else if (i == 3) //left
-			{
-				spriteKika.setTexture(textureLeft);
-				x -= speed * dt;
-			}
-			else if (i == 4) //right
-			{
-				spriteKika.setTexture(textureRight);
-				x += speed * dt;
-			}
-			spriteKika.setPosition(x, y);
-			break;
-		case MV:
-			if (i == 1)//up
-			{
-				spriteMV.setTexture(textureDown);
-				y -= speed * dt;
-			}
-			else if (i == 2) //down
-			{
-				spriteMV.setTexture(textureUp);
-				y += speed * dt;
-			}
-			else if (i == 3) //left
-			{
-				spriteMV.setTexture(textureLeft);
-				x -= speed * dt;
-			}
-			else if (i == 4) //right
-			{
-				spriteMV.setTexture(textureRight);
-				x += speed * dt;
-			}
-			spriteMV.setPosition(x, y);
-			break;
-		}
-	}
+	virtual void Move(int i, double dt, float timer) = 0;
+	//{
+	//	switch (selectedCharacter) {
+	//	case CHIKA:
+	//		if (i == 1)//up
+	//		{
+	//			spriteChika.setTexture(textureDown);
+	//			y -= speed * dt;
+	//		}
+	//		else if (i == 2) //down
+	//		{
+	//			spriteChika.setTexture(textureUp);
+	//			y += speed * dt;
+	//		}
+	//		else if (i == 3) //left
+	//		{
+	//			spriteChika.setTexture(textureLeft);
+	//			x -= speed * dt;
+	//		}
+	//		else if (i == 4) //right
+	//		{
+	//			spriteChika.setTexture(textureRight);
+	//			x += speed * dt;
+	//		}
+	//		spriteChika.setPosition(x, y);
+	//		break;
+	//	case KIKA:
+	//		if (i == 1)//up
+	//		{
+	//			spriteKika.setTexture(textureDown);
+	//			y -= speed * dt;
+	//		}
+	//		else if (i == 2) //down
+	//		{
+	//			spriteKika.setTexture(textureUp);
+	//			y += speed * dt;
+	//		}
+	//		else if (i == 3) //left
+	//		{
+	//			spriteKika.setTexture(textureLeft);
+	//			x -= speed * dt;
+	//		}
+	//		else if (i == 4) //right
+	//		{
+	//			spriteKika.setTexture(textureRight);
+	//			x += speed * dt;
+	//		}
+	//		spriteKika.setPosition(x, y);
+	//		break;
+	//	case MV:
+	//		if (i == 1)//up
+	//		{
+	//			spriteMV.setTexture(textureDown);
+	//			y -= speed * dt;
+	//		}
+	//		else if (i == 2) //down
+	//		{
+	//			spriteMV.setTexture(textureUp);
+	//			y += speed * dt;
+	//		}
+	//		else if (i == 3) //left
+	//		{
+	//			spriteMV.setTexture(textureLeft);
+	//			x -= speed * dt;
+	//		}
+	//		else if (i == 4) //right
+	//		{
+	//			spriteMV.setTexture(textureRight);
+	//			x += speed * dt;
+	//		}
+	//		spriteMV.setPosition(x, y);
+	//		break;
+	//	}
+	//}
 
 	//геттеры и сеттеры
 	double X() { return x; }
 	double Y() { return y; }
 
-	//не очень нужно
 	int DOPS() { return dops; }
 	int Hearts() { return hearts; }
 
@@ -163,39 +164,134 @@ public:
 	void nullHearts() { hearts = 3; }
 	void defSpeed() { speed = 200; }
 
-	int typeCharacter() {
-		switch (selectedCharacter) {
-		case CHIKA:
-			return 1;
-			break;
-		case KIKA:
-			return 2;
-			break;
-		case MV:
-			return 3;
-			break;
-		}
+	sf::Sprite Get(){ 
+		return sprite;
 	}
-	void typeCharacter(int i) {
-		if (i == 1)
-			selectedCharacter = CHIKA;
-		if (i == 2)
-			selectedCharacter = KIKA;
-		if (i == 3)
-			selectedCharacter = MV;
+};
+
+class Chika : public Person {
+public:
+	void Setup(double scx, double scy) override {
+		x = scx;
+		y = scy;
+
+		menu.loadFromFile("sprites\\CHIKAmenu.png");
+		textureUp.loadFromFile("sprites\\CHIKAstraight.png");
+		textureDown.loadFromFile("sprites\\CHIKAback.png");
+		textureLeft.loadFromFile("sprites\\CHIKAleft.png");
+		textureRight.loadFromFile("sprites\\CHIKAright.png");
+
+		sprite.setTexture(menu);
+		sprite.setOrigin(menu.getSize().x / 2, menu.getSize().y / 2);
+		sprite.setScale(2, 2);
+		sprite.setPosition(x, y);
 	}
 
-	sf::Sprite Get(){ 
-		switch (selectedCharacter) {
-		case CHIKA:
-			return spriteChika;
-			break;
-		case KIKA:
-			return spriteKika;
-			break;
-		case MV:
-			return spriteMV;
-			break;
+	void Move(int i, double dt, float timer) override{
+		if (i == 1)//up
+		{
+			sprite.setTexture(textureDown);
+			y -= speed * dt;
 		}
+		else if (i == 2) //down
+		{
+			sprite.setTexture(textureUp);
+			y += speed * dt;
+		}
+		else if (i == 3) //left
+		{
+			sprite.setTexture(textureLeft);
+			x -= speed * dt;
+		}
+		else if (i == 4) //right
+		{
+			sprite.setTexture(textureRight);
+			x += speed * dt;
+		}
+		sprite.setPosition(x, y);
+	}
+};
+
+class Kika : public Person {
+public:
+	void Setup(double scx, double scy) override {
+		x = scx;
+		y = scy;
+		menu.loadFromFile("sprites\\KIKAmenu.png");
+		textureUp.loadFromFile("sprites\\KIKAstraight.png");
+		textureDown.loadFromFile("sprites\\KIKAback.png");
+		textureLeft.loadFromFile("sprites\\KIKAleft.png");
+		textureRight.loadFromFile("sprites\\KIKAright.png");
+
+		sprite.setTexture(menu);
+		sprite.setOrigin(menu.getSize().x / 2, menu.getSize().y / 2);
+		sprite.setScale(2, 2);
+		sprite.setPosition(x, y);
+	}
+
+	void Move(int i, double dt, float timer) override {
+		if (i == 1)//up
+		{
+			sprite.setTexture(textureDown);
+			y -= speed * dt;
+		}
+		else if (i == 2) //down
+		{
+			sprite.setTexture(textureUp);
+			y += speed * dt;
+		}
+		else if (i == 3) //left
+		{
+			sprite.setTexture(textureLeft);
+			x -= speed * dt;
+		}
+		else if (i == 4) //right
+		{
+			sprite.setTexture(textureRight);
+			x += speed * dt;
+		}
+		sprite.setPosition(x, y);
+	}
+};
+
+class MV : public Person {
+public:
+	void Setup(double scx, double scy) override {
+		x = scx;
+		y = scy;
+		menu.loadFromFile("sprites\\MVmenu.png");
+		textureUp.loadFromFile("sprites\\MVstraight.png");
+		textureDown.loadFromFile("sprites\\MVback.png");
+		textureLeft.loadFromFile("sprites\\MVleft.png");
+		textureRight.loadFromFile("sprites\\MVright.png");
+
+		sprite.setTexture(menu);
+		sprite.setOrigin(menu.getSize().x / 2, menu.getSize().y / 2);
+		sprite.setScale(2, 2);
+		sprite.setPosition(x, y);
+	}
+
+	void Move(int i, double dt, float timer) override {
+		if (i == 1)//up
+		{
+			sprite.setTexture(textureDown);
+			y -= speed * dt;
+		}
+		else if (i == 2) //down
+		{
+			sprite.setTexture(textureUp);
+			y += speed * dt;
+		}
+		else if (i == 3) //left
+		{
+			sprite.setTexture(textureLeft);
+			x -= speed * dt;
+		}
+		else if (i == 4) //right
+		{
+			sprite.setTexture(textureRight);
+			x += speed * dt;
+		}
+		sprite.setPosition(x, y);
 	}
 };
