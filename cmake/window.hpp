@@ -31,9 +31,8 @@ int TouchBorder(Person& obj) {
 class Game {
 private:
     sf::RenderWindow window;
-    Chika person;
-    Zat zat;
-    Dop dop2;
+    Person person;
+    int choosen = 0;
     float Time = 0;
     int scx = 1600;
     int scy = 900;
@@ -209,14 +208,14 @@ public:
 
            //персонажи для выбора
            sf::Texture chikat;
-           chikat.loadFromFile("sprites\\CHIKAmenu.png");//Чика
+           chikat.loadFromFile("sprites\\CHIKAstraightStop.png");//Чика
            sf::Sprite chika(chikat);
            chika.setPosition(550, 250);
            chika.setScale(5, 5);
            window.draw(chika);
 
            sf::Texture kikat;
-           kikat.loadFromFile("sprites\\KIKAmenu.png");//Кика
+           kikat.loadFromFile("sprites\\KIKAstraightStop.png");//Кика
            sf::Sprite kika(kikat);
            kika.setPosition(850, 250);
            kika.setScale(5.5, 5.5);
@@ -232,12 +231,14 @@ public:
             {
                 if (chika.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
-                    //person.typeCharacter(1);
+                    person.typeCharacter(1);
+                    choosen = 1;
                     state = InGame;
                 }
                 else if (kika.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
-                    //person.typeCharacter(2);
+                    person.typeCharacter(2);
+                    choosen = 2;
                     state = InGame;
                 }
             }
@@ -359,7 +360,7 @@ public:
         window.display();
     }
 
-    void Setup(){person.Setup(scx, scy);}
+    void Setup(){person.Setup(scx/2, scy/2);}
 
     bool TouchDop(Person& person, Dop& dop){
         double xp = person.X();
@@ -464,19 +465,29 @@ public:
     }
 
     void Life() {
+        //Внимание, говорит Германия
+        //Виктория
+        //У меня пару идей на ускорение, возможно вам помогут
+        //сделать аля счетчик-тип процесса (используется ускорение, откатывается, заполнено), в зависимости от этого разные действия(может свитч-кейс)
+        //Два счетчика будет вроде на использование и откат, как я время использую тут есть, но хрен конечно поймешь
+        //ну и надо аккуратно с увеличением скорости прибавлять и вычитать одно значение, будет или один метод в классе перса и два на вычет и слож
+        //вот, удачки! :3
         sf::Clock clock;
-        float doptimer = 0;
-        float zachtimer = 0;
-        float persontimer = 0;
-        float steptimer = 0;
-        float backtimer = 0;
+        float doptimer = 0;//таймер на появление допов
+        float zachtimer = 0;//таймер на появление зачетов
+        float persontimer = 0;//таймер на увеличение скорости перса
+        float steptimer = 0;//таймер на смену анимации
+        float backtimer = 0;//таймер на смену фона в режиме мв
         Dop dops[25];
         Zat zacheti[15];
         int dopcount = 0;
         int zachcount = 0;
         bool Gameover = 0;
-        bool flag = 1;
-        int LastTime = 0;
+        bool step = 1;//флаг на тип спрайта при анимации
+        bool flag = 1;//флаг на настало время выдавать допы
+        bool mv = 0;//флаг на режим мв
+        int LastTime = 0;//счетчик времени для последней сложности
+        int typedir = 2;//тип движения
 
         //обнуляем допы, сердца, и время
         Time = 0;
@@ -492,6 +503,7 @@ public:
         sf::Music sound;
         sound.openFromFile("sprites\\MV.wav");
         sound.setLoop(true);
+        sound.setVolume(25);
 
         //фон
         sf::Texture backgroundGAMETexture;
@@ -527,6 +539,16 @@ public:
         dopsText.setOutlineColor(sf::Color::White);
         dopsText.setFillColor(sf::Color::Black);
         dopsText.setPosition(350, 60);
+
+        sf::Text trick;
+        trick.setFont(font);
+        trick.setCharacterSize(30);
+        trick.setOutlineThickness(3);
+        trick.setOutlineColor(sf::Color::White);
+        trick.setFillColor(sf::Color::Black);
+        std::string trickString = "To exit - press E";
+        trick.setString(trickString);
+        trick.setPosition(660, 30);
        
         while (window.isOpen() && !Gameover)
         {
@@ -544,10 +566,19 @@ public:
                     }
             }
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-                //person.typeCharacter(3);
-                person.Setup(scx, scy);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && mv == 0) {
+                mv = 1;
+                person.typeCharacter(3);
+                person.Setup(person.X(), person.Y());
                 sound.play();
+                window.draw(person.Get());
+            }
+
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && mv == 1) {
+                mv = 0;
+                person.typeCharacter(choosen);
+                person.Setup(person.X(), person.Y());
+                sound.stop();
                 window.draw(person.Get());
             }
 
@@ -577,34 +608,69 @@ public:
             }
 
             int touch = TouchBorder(person);
-            if (!touch) {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-                    person.Move(1, dt, steptimer);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-                    person.Move(2, dt, steptimer);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-                    person.Move(3, dt, steptimer);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-                    person.Move(4, dt, steptimer);
+            if (steptimer > 1 && step) {
+                step = 0;
+                steptimer = 0;
             }
-            else if (touch == 1)
-                person.Move(2, dt, steptimer);
-            else if (touch == 2)
-                person.Move(1, dt, steptimer);
-            else if (touch == 3)
-                person.Move(4, dt, steptimer);
-            else if (touch == 4)
-                person.Move(3, dt, steptimer);
+            else if (steptimer > 0.3 && !step) {
+                step = 1;
+                steptimer = 0;
+            }
+
+            if (!touch) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+                    person.Move(1, dt, step);
+                    typedir = 1;
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+                    person.Move(2, dt, step);
+                    typedir = 2;
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+                    person.Move(3, dt, step);
+                    typedir = 3;
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+                    person.Move(4, dt, step);
+                    typedir = 4;
+                }
+                else {
+                    person.Stop(typedir);
+                }
+            }
+            else if (touch == 1) {
+                person.Move(2, dt, step);
+                typedir = 1;
+            }
+            else if (touch == 2) {
+                person.Move(1, dt, step);
+                typedir = 2;
+            }
+            else if (touch == 3) {
+                person.Move(4, dt, step);
+                typedir = 3;
+            }
+            else if (touch == 4) {
+                person.Move(3, dt, step);
+                typedir = 4;
+            }
 
             window.clear();
-            if (/*person.typeCharacter() == 3 && */backtimer > 0.4) {
+            if (mv == 1 && backtimer > 0.4) {
                 int r = rand() % (250 - 0 + 1) + 0;
                 int g = rand() % (250 - 0 + 1) + 0;
                 int b = rand() % (250 - 0 + 1) + 0;
                 background.setColor(sf::Color(r, g, b));
                 backtimer = 0;
             }
+            else if (mv == 0) {
+                background.setColor(sf::Color(255, 255, 255));
+            }
             window.draw(background);
+
+            if (mv == 1) {
+                window.draw(trick);
+            }
 
             int hearts = person.Hearts();
             if (hearts == 3)
