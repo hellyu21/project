@@ -494,6 +494,7 @@ public:
         person.nullDop();
         person.nullHearts();
         person.defSpeed();
+        person.Setup(person.X(), person.Y());
 
         float speed_creation = 5;
         int speed_zach = 200;

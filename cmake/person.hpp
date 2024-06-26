@@ -68,7 +68,7 @@ public:
 			spriteChika.setPosition(x, y);
 			break;
 		case KIKA:
-			menu.loadFromFile("sprites\\KIKAmenu.png");
+			menu.loadFromFile("sprites\\KIKAstraightStop.png");
 			textureUp1.loadFromFile("sprites\\KIKAstraight.png");
 			textureDown1.loadFromFile("sprites\\KIKAback.png");
 			textureLeft1.loadFromFile("sprites\\KIKAleft.png");
