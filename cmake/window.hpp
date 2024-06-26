@@ -465,13 +465,6 @@ public:
     }
 
     void Life() {
-        //Внимание, говорит Германия
-        //Виктория
-        //У меня пару идей на ускорение, возможно вам помогут
-        //сделать аля счетчик-тип процесса (используется ускорение, откатывается, заполнено), в зависимости от этого разные действия(может свитч-кейс)
-        //Два счетчика будет вроде на использование и откат, как я время использую тут есть, но хрен конечно поймешь
-        //ну и надо аккуратно с увеличением скорости прибавлять и вычитать одно значение, будет или один метод в классе перса и два на вычет и слож
-        //вот, удачки! :3
         sf::Clock clock;
         float doptimer = 0;//таймер на появление допов
         float zachtimer = 0;//таймер на появление зачетов
@@ -551,6 +544,7 @@ public:
         trick.setString(trickString);
         trick.setPosition(660, 30);
        
+        person.batSetup();//подгрузка текстур батареи
         while (window.isOpen() && !Gameover)
         {
             sf::Event event;
@@ -565,7 +559,7 @@ public:
                         sound.stop();
                         Records();
                     }
-            }
+            }         
 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && mv == 0) {
                 mv = 1;
@@ -582,9 +576,10 @@ public:
                 sound.stop();
                 window.draw(person.Get());
             }
-
+           
             float dt = clock.getElapsedTime().asSeconds();
             clock.restart();
+            person.Update(dt);//зарядка батареи
             Time += dt;
             doptimer += dt;
             persontimer += dt;
@@ -657,6 +652,7 @@ public:
             }
 
             window.clear();
+
             if (mv == 1 && backtimer > 0.4) {
                 int r = rand() % (250 - 0 + 1) + 0;
                 int g = rand() % (250 - 0 + 1) + 0;
@@ -715,7 +711,6 @@ public:
                     zachcount--;
                     person.Minusheart();
                     if (person.Hearts() == 0) {
-                        window.clear();
                         Gameover = 1;
                         sound.stop();
                         Records();
@@ -738,6 +733,7 @@ public:
                 dops[i].Move(Time);
                 window.draw(dops[i].Get());
             }
+            window.draw(person.getManaSprite());//отрисовка батареи
             window.draw(person.Get());
            
 

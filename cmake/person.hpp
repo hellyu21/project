@@ -4,15 +4,22 @@
 
 class Person{
 protected:
+	//персонаж
 	double x;
 	double y;
 	double speed = 200;
 	
+	//ускорение
+	double boostTime = 5;
+	double currentBoostTime = boostTime;
+	double chargebat = 1; //скорость зарядки батарейки
+	double boostSpeed = 300;
+
 	int hearts = 3;
 	int dops = 0;
 	int way = 1;
 
-	//спрайты
+	//текстуры и спрайты
 	sf::Texture menu;
 	sf::Texture textureUp1;
 	sf::Texture textureDown1;
@@ -32,6 +39,9 @@ protected:
 	sf::Sprite spriteChika;
 	sf::Sprite spriteKika;
 	sf::Sprite spriteMV;
+
+	sf::Texture m0, m2, m4, m6, m8, m10;
+	sf::Sprite manaSprite;
 
 	enum Character { CHIKA, KIKA, MV };
 	Character selectedCharacter;
@@ -116,11 +126,51 @@ public:
 
 	~Person() = default;
 	
-	void SpeedChange(int delta) {
-		speed += delta;
+	void SpeedChange(int delta) {speed += delta;}
+
+	void batSetup() {//подгрузка спрайтов
+		m0.loadFromFile("sprites\\mana0.png");
+		m2.loadFromFile("sprites\\mana20.png");
+		m4.loadFromFile("sprites\\mana40.png");
+		m6.loadFromFile("sprites\\mana60.png");
+		m8.loadFromFile("sprites\\mana80.png");
+		m10.loadFromFile("sprites\\mana100.png");
+		manaSprite.setTexture(m10);
+		manaSprite.setScale(0.75, 0.75);
+		manaSprite.setPosition(400, 50);
+	}
+	
+	void UpdateMana() {//смена спрайтов
+		if (currentBoostTime <= 0) manaSprite.setTexture(m0);
+		else if (currentBoostTime < 1) manaSprite.setTexture(m2);
+		else if (currentBoostTime < 2) manaSprite.setTexture(m4);
+		else if (currentBoostTime < 3) manaSprite.setTexture(m6);
+		else if (currentBoostTime < 4) manaSprite.setTexture(m8);
+		else manaSprite.setTexture(m10);		
+	}
+
+	void Update(float dt) {//заряжаю батарею
+		if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			if (currentBoostTime < boostTime) {
+				currentBoostTime += chargebat * dt;
+				if (currentBoostTime > boostTime) {
+					currentBoostTime = boostTime;
+				}
+			}
+		}
+		UpdateMana();
 	}
 
 	void Move(int i, double dt, bool timer) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && currentBoostTime > 0) {//разряжаю батарею
+			speed = boostSpeed;
+			currentBoostTime -= dt;
+			if (currentBoostTime < 0) {
+				currentBoostTime = 0;
+			}
+		}
+		else { defSpeed(); }
+		UpdateMana();
 		switch (selectedCharacter) {
 		case CHIKA:
 			if (i == 1 && timer)//up
@@ -277,7 +327,9 @@ public:
 
 	int DOPS() { return dops; }
 	int Hearts() { return hearts; }
-
+	sf::Sprite getManaSprite() {
+		return manaSprite;
+	}
 	void plusDop() { dops++; }
 	void Minusheart() { hearts--; }
 
