@@ -12,8 +12,8 @@ protected:
 	//ускорение
 	double boostTime = 5;
 	double currentBoostTime = boostTime;
-	double chargebat = 1; //скорость зарядки батарейки
-	double boostSpeed = 300;
+	double chargebat = 0.75;//скорость зарядки батарейки
+	double boostSpeed = 325;
 
 	int hearts = 3;
 	int dops = 0;
@@ -149,8 +149,14 @@ public:
 		else manaSprite.setTexture(m10);		
 	}
 
-	void Update(float dt) {//заряжаю батарею
-		if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+	void Update(float dt) {//ускорение+батарея
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && currentBoostTime > 0) {
+			speed = boostSpeed;
+			currentBoostTime -= dt;
+			if (currentBoostTime < 0) {	currentBoostTime = 0;	}
+		}
+		else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			defSpeed();  
 			if (currentBoostTime < boostTime) {
 				currentBoostTime += chargebat * dt;
 				if (currentBoostTime > boostTime) {
@@ -158,19 +164,11 @@ public:
 				}
 			}
 		}
+		else { defSpeed(); }
 		UpdateMana();
 	}
 
 	void Move(int i, double dt, bool timer) {
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && currentBoostTime > 0) {//разряжаю батарею
-			speed = boostSpeed;
-			currentBoostTime -= dt;
-			if (currentBoostTime < 0) {
-				currentBoostTime = 0;
-			}
-		}
-		else { defSpeed(); }
-		UpdateMana();
 		switch (selectedCharacter) {
 		case CHIKA:
 			if (i == 1 && timer)//up
