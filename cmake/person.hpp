@@ -13,7 +13,7 @@ protected:
 	double boostTime = 5;
 	double currentBoostTime = boostTime;
 	double chargebat = 0.75;//скорость зарядки батарейки
-	double boostSpeed = 50;
+	double boostSpeed = 100;
 
 	int hearts = 3;
 	int dops = 0;
@@ -151,6 +151,8 @@ public:
 
 	
 	bool shift = false;
+	bool stop = false;
+
 	void Update(double dt) {//ускорение+батарея
 		//ускорение
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !shift && currentBoostTime > 0) {
@@ -163,15 +165,18 @@ public:
 			if (currentBoostTime < 0) { currentBoostTime = 0; }
 		}
 		//замедление
-		else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && shift) {
+		else if ((!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || currentBoostTime <= 0) && shift) {
 			speed -= boostSpeed;
 			shift = false;
+			stop = true;
+			if (speed < 0) { speed = 0; }
 		}
 		//заряд батареи
-		else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && (currentBoostTime < boostTime)) {
+		else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && (currentBoostTime < boostTime) && !shift && stop) {
 			currentBoostTime += chargebat * dt;
 			if (currentBoostTime > boostTime) {
 				currentBoostTime = boostTime;
+				stop = false;
 			}
 		}
 		UpdateMana();
@@ -343,7 +348,6 @@ public:
 	void nullDop() {dops = 0;}
 	void nullHearts() { hearts = 3; }
 	void defSpeed() { speed = 200; }
-	double getSpeed(){ return speed; }
 	int typeCharacter() {
 		switch (selectedCharacter) {
 		case CHIKA:
