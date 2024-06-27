@@ -8,12 +8,12 @@ protected:
 	double x;
 	double y;
 	double speed = 200;
-	
+
 	//ускорение
 	double boostTime = 5;
 	double currentBoostTime = boostTime;
 	double chargebat = 0.75;//скорость зарядки батарейки
-	double boostSpeed = 325;
+	double boostSpeed = 50;
 
 	int hearts = 3;
 	int dops = 0;
@@ -137,7 +137,7 @@ public:
 		m10.loadFromFile("sprites\\mana100.png");
 		manaSprite.setTexture(m10);
 		manaSprite.setScale(0.75, 0.75);
-		manaSprite.setPosition(400, 50);
+		manaSprite.setPosition(1400, 50);
 	}
 	
 	void UpdateMana() {//смена спрайтов
@@ -149,22 +149,31 @@ public:
 		else manaSprite.setTexture(m10);		
 	}
 
-	void Update(float dt) {//ускорение+батарея
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && currentBoostTime > 0) {
-			speed = boostSpeed;
-			currentBoostTime -= dt;
-			if (currentBoostTime < 0) {	currentBoostTime = 0;	}
+	
+	bool shift = false;
+	void Update(double dt) {//ускорение+батарея
+		//ускорение
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !shift && currentBoostTime > 0) {
+			speed += boostSpeed;
+			shift = true;
 		}
-		else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-			defSpeed();  
-			if (currentBoostTime < boostTime) {
-				currentBoostTime += chargebat * dt;
-				if (currentBoostTime > boostTime) {
-					currentBoostTime = boostTime;
-				}
+		//разряд батареи
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && currentBoostTime > 0) {
+			currentBoostTime -= dt;
+			if (currentBoostTime < 0) { currentBoostTime = 0; }
+		}
+		//замедление
+		else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && shift) {
+			speed -= boostSpeed;
+			shift = false;
+		}
+		//заряд батареи
+		else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && (currentBoostTime < boostTime)) {
+			currentBoostTime += chargebat * dt;
+			if (currentBoostTime > boostTime) {
+				currentBoostTime = boostTime;
 			}
 		}
-		else { defSpeed(); }
 		UpdateMana();
 	}
 
@@ -334,7 +343,7 @@ public:
 	void nullDop() {dops = 0;}
 	void nullHearts() { hearts = 3; }
 	void defSpeed() { speed = 200; }
-
+	double getSpeed(){ return speed; }
 	int typeCharacter() {
 		switch (selectedCharacter) {
 		case CHIKA:
