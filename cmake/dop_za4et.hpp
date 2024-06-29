@@ -12,11 +12,11 @@ public:
 	Dop() = default;
 
 	void Setup() {
-		x = rand() % (1540 - 60 + 1) + 60;
-		y = rand() % (820 - 80 + 1) + 80;
-		while (0 < x && x < 400 && 0 < y && y < 180) {
-			x = rand() % (1540 - 60 + 1) + 60;
-			y = rand() % (820 - 80 + 1) + 80;
+		x = rand() % (1420 - 100 + 1) + 100;
+		y = rand() % (800 - 100 + 1) + 100;
+		while (0 < x && x < 400 && 0 < y && y < 180 || 1420 < x && x < 1600 && 0 < y && y < 190) {
+			x = rand() % (1420 - 100 + 1) + 100;
+			y = rand() % (800 - 100 + 1) + 100;
 		}
 		dop.loadFromFile("sprites\\dop.png");
 		sprite.setTexture(dop);
@@ -85,7 +85,7 @@ public:
 		sprite = new sf::Sprite;
 		type = rand() % (4 - 1 + 1) + 1;
 		if (type == 1) {//сверху
-			x = rand() % (1580 - 20 + 1) + 20;
+			x = rand() % (1580 - 300 + 1) + 300;
 			y = 0;
 			sprite->setTexture(textureDown);
 			sprite->setOrigin(textureDown.getSize().x / 2, textureDown.getSize().y/2);

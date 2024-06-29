@@ -24,6 +24,10 @@ int TouchBorder(Person& obj) {
         return 2; //down
     else if (y - 50 < 0)
         return 1; //up
+    else if (x - 30 < 370 && y - 50 < 100)
+        return 5;
+    else if (x + 30 > 1420 && y - 50 < 90)
+        return 6;
     else
         return 0;
 }
@@ -48,7 +52,7 @@ public:
    
     Game() { 
         srand(time(0));
-        window.create(sf::VideoMode(scx, scy), "Incredible adventure of a student!");
+        window.create(sf::VideoMode(scx, scy), "Incredible adventure of a student!"/*, sf::Style::Titlebar*/);
         state = menu;
     }
 
@@ -104,23 +108,25 @@ public:
         nameText.setOutlineThickness(15);
         nameText.setOutlineColor(sf::Color(250,149,18));
         nameText.setFillColor(sf::Color::Black);
-        std::string nameString = "Incredible\nadventure\nof a student!"; 
+        std::string nameString = "Incredible  adventure\nof a student!"; 
         nameText.setString(nameString);
-        nameText.setPosition(800, 200);
+        nameText.setPosition(100, 80);
         window.draw(nameText);     
 
         //кнопка старт
         sf::Texture startTexture;
         startTexture.loadFromFile("sprites\\start.png");
         sf::Sprite startButton(startTexture);
-        startButton.setPosition(100, 200);
+        startButton.setPosition(100, 400);
+        startButton.setScale(1.15, 1.15);
         window.draw(startButton);   
 
         //кнопка выход
         sf::Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
         sf::Sprite exitButton(exitT);
-        exitButton.setPosition(100, 500);
+        exitButton.setPosition(100, 575);
+        exitButton.setScale(1.15, 1.15);
         window.draw(exitButton);
 
         sf::Text spaceText;
@@ -170,6 +176,12 @@ public:
            ccback.setScale(0.75, 0.75);
            window.draw(ccback);
 
+           sf::Texture framebackTexture;
+           framebackTexture.loadFromFile("sprites\\backframe.png");
+           sf::Sprite frameback(framebackTexture);
+           frameback.setPosition(-5, 5);
+           window.draw(frameback);
+
            //текст
            sf::Text chooseText;
            sf::Text num1;
@@ -183,7 +195,7 @@ public:
            chooseText.setFillColor(sf::Color::Black);
            std::string chooseString = "Choose your character";
            chooseText.setString(chooseString);
-           chooseText.setPosition(500, 100); 
+           chooseText.setPosition(505, 98); 
            window.draw(chooseText);
 
            num1.setFont(font);
@@ -193,7 +205,7 @@ public:
            num1.setFillColor(sf::Color::Black);
            std::string num1s = "Chika";
            num1.setString(num1s);
-           num1.setPosition(550, 550);
+           num1.setPosition(500, 628);
            window.draw(num1);
 
            num2.setFont(font); 
@@ -203,22 +215,22 @@ public:
            num2.setFillColor(sf::Color::Black); 
            std::string num2s = "Kika";
            num2.setString(num2s);
-           num2.setPosition(850, 550); 
+           num2.setPosition(1000, 628); 
            window.draw(num2);
 
            //персонажи для выбора
            sf::Texture chikat;
            chikat.loadFromFile("sprites\\CHIKAstraightStop.png");//Чика
            sf::Sprite chika(chikat);
-           chika.setPosition(550, 250);
-           chika.setScale(5, 5);
+           chika.setPosition(480, 200);
+           chika.setScale(7, 7);
            window.draw(chika);
 
            sf::Texture kikat;
            kikat.loadFromFile("sprites\\KIKAstraightStop.png");//Кика
            sf::Sprite kika(kikat);
-           kika.setPosition(850, 250);
-           kika.setScale(5.5, 5.5);
+           kika.setPosition(970, 200);
+           kika.setScale(7.5, 7.5);
            window.draw(kika);
          
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -250,25 +262,36 @@ public:
     }
     
     void GameOver() {
+        window.setMouseCursorVisible(true);
         //фон
         sf::Texture backgroundTexture;
         backgroundTexture.loadFromFile("sprites\\backGO.jpg");
         sf::Sprite background(backgroundTexture);
         background.setScale(1.5, 1.5);
         window.draw(background);
+
+        sf::Texture frametex;
+        frametex.loadFromFile("sprites\\framebackgameover.png");
+        sf::Sprite framewbuttons(frametex);
+        window.draw(framewbuttons);
+
+        sf::Texture papertex;
+        papertex.loadFromFile("sprites\\framebackpaper.png");
+        sf::Sprite paper(papertex);
+        window.draw(paper);
        
         //кнопка выход
         sf::Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
         sf::Sprite exitButton(exitT);
-        exitButton.setPosition(100, 600);
+        exitButton.setPosition(120, 550);
         window.draw(exitButton);
        
         //кнопка рестарт
         sf::Texture restartTexture;
         restartTexture.loadFromFile("sprites\\RESTART.png");
         sf::Sprite restartButton(restartTexture);
-        restartButton.setPosition(100, 400);
+        restartButton.setPosition(120, 400);
         window.draw(restartButton);
       
         sf::Text dopsText;
@@ -295,7 +318,7 @@ public:
         if (50 <= dops)
             dopsString += "\nInsane!!! ()-()";
         dopsText.setString(dopsString);
-        dopsText.setPosition(100, 100);
+        dopsText.setPosition(120, 150);
         window.draw(dopsText);
 
         timeText.setFont(font);
@@ -306,7 +329,7 @@ public:
         int timeIn = round(Time);
         std::string timeString = "Time in game: " + std::to_string(timeIn) + " seconds.";
         timeText.setString(timeString);
-        timeText.setPosition(100, 250);
+        timeText.setPosition(120, 230);
         window.draw(timeText);
 
         sf::Text recordText;
@@ -322,7 +345,7 @@ public:
         recordString += records[9];
 
         recordText.setString(recordString);
-        recordText.setPosition(900, 100);
+        recordText.setPosition(920, 180);
         window.draw(recordText);
 
         sf::Text secret;
@@ -360,7 +383,7 @@ public:
         window.display();
     }
 
-    void Setup(){person.Setup(scx/2, scy/2);}
+    void Setup(){person.Setup(scx / 2, scy / 2); }
 
     bool TouchDop(Person& person, Dop& dop){
         double xp = person.X();
@@ -465,6 +488,7 @@ public:
     }
 
     void Life() {
+        window.setMouseCursorVisible(false);
         sf::Clock clock;
         float doptimer = 0;//таймер на появление допов
         float zachtimer = 0;//таймер на появление зачетов
@@ -503,6 +527,9 @@ public:
         sf::Texture backgroundGAMETexture;
         backgroundGAMETexture.loadFromFile("sprites\\backGame.png");
         sf::Sprite background(backgroundGAMETexture);
+        sf::Texture frameTexture;
+        frameTexture.loadFromFile("sprites\\ramka.png");
+        sf::Sprite frame(frameTexture);
         
         //отрисовка жизней
         sf::Texture heart3;
@@ -521,7 +548,7 @@ public:
         sf::Texture dooop;
         dooop.loadFromFile("sprites\\dop.png");
         sf::Sprite dooop1(dooop);
-        dooop1.setPosition(250, 40);
+        dooop1.setPosition(230, 15);
         dooop1.setScale(2, 2);
 
         sf::Text dopsText;
@@ -532,7 +559,7 @@ public:
         dopsText.setOutlineThickness(3);
         dopsText.setOutlineColor(sf::Color::White);
         dopsText.setFillColor(sf::Color::Black);
-        dopsText.setPosition(350, 60);
+        dopsText.setPosition(335, 35);
 
         sf::Text trick;
         trick.setFont(font);
@@ -650,6 +677,16 @@ public:
                 person.Move(3, dt, step);
                 typedir = 4;
             }
+            else if (touch == 5) {
+                person.Move(2, dt, step);
+                person.Move(4, dt, step);
+                typedir = 3;
+            }
+            else if (touch == 6) {
+                person.Move(2, dt, step);
+                person.Move(3, dt, step);
+                typedir = 4;
+            }
 
             window.clear();
 
@@ -669,31 +706,6 @@ public:
                 window.draw(trick);
             }
 
-            int hearts = person.Hearts();
-            if (hearts == 3)
-            {
-                fullheart.setPosition(50, 50);
-                fullheart.setScale(0.75, 0.75);
-                window.draw(fullheart);
-            }
-            else if (hearts == 2)
-            {
-                twoheart.setPosition(50, 50);
-                twoheart.setScale(0.75, 0.75);
-                window.draw(twoheart);
-            }
-            else if (hearts == 1)
-            {
-                oneheart.setPosition(50, 50);
-                oneheart.setScale(0.75, 0.75);
-                window.draw(oneheart);
-            }
-            window.draw(dooop1);
-
-            int dopes = person.DOPS();
-            std::string dopsString = std::to_string(dopes);
-            dopsText.setString(dopsString);
-            window.draw(dopsText);
             for (int i = 0; i < zachcount; i++) {
                 int typezat = zacheti[i].TYPE();
                 if ((typezat == 1 && zacheti[i].Y() - 20 > 900) ||
@@ -735,7 +747,33 @@ public:
             }
             window.draw(person.getManaSprite());//отрисовка батареи
             window.draw(person.Get());
-           
+
+            window.draw(frame);
+            int hearts = person.Hearts();
+            if (hearts == 3)
+            {
+                fullheart.setPosition(30, 30);
+                fullheart.setScale(0.75, 0.75);
+                window.draw(fullheart);
+            }
+            else if (hearts == 2)
+            {
+                twoheart.setPosition(30, 30);
+                twoheart.setScale(0.75, 0.75);
+                window.draw(twoheart);
+            }
+            else if (hearts == 1)
+            {
+                oneheart.setPosition(30, 30);
+                oneheart.setScale(0.75, 0.75);
+                window.draw(oneheart);
+            }
+            window.draw(dooop1);
+
+            int dopes = person.DOPS();
+            std::string dopsString = std::to_string(dopes);
+            dopsText.setString(dopsString);
+            window.draw(dopsText);
 
             if (Time > 5 && persontimer > 5 && Time < 20) {
                 person.SpeedChange(4);
