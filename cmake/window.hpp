@@ -105,7 +105,7 @@ public:
         font.loadFromFile("font\\Trick.ttf");
         nameText.setFont(font);
         nameText.setCharacterSize(70);
-        nameText.setOutlineThickness(15);
+        nameText.setOutlineThickness(10);
         nameText.setOutlineColor(sf::Color(250,149,18));
         nameText.setFillColor(sf::Color::Black);
         std::string nameString = "Incredible  adventure\nof a student!"; 
@@ -284,14 +284,14 @@ public:
         sf::Texture exitT;
         exitT.loadFromFile("sprites\\QUIT.png");
         sf::Sprite exitButton(exitT);
-        exitButton.setPosition(120, 550);
+        exitButton.setPosition(175, 550);
         window.draw(exitButton);
        
         //кнопка рестарт
         sf::Texture restartTexture;
         restartTexture.loadFromFile("sprites\\RESTART.png");
         sf::Sprite restartButton(restartTexture);
-        restartButton.setPosition(120, 400);
+        restartButton.setPosition(135, 400);
         window.draw(restartButton);
       
         sf::Text dopsText;
@@ -301,7 +301,7 @@ public:
         dopsText.setFont(font);
         dopsText.setCharacterSize(30);
         dopsText.setOutlineThickness(3);
-        dopsText.setOutlineColor(sf::Color(250,149,18));
+        dopsText.setOutlineColor(sf::Color(250, 149, 18));
         dopsText.setFillColor(sf::Color::Black);
         int dops = person.DOPS();
         std::string dopsString = "You have " + std::to_string(dops) + " dop(s).";
@@ -335,8 +335,6 @@ public:
         sf::Text recordText;
         recordText.setFont(font);
         recordText.setCharacterSize(30);
-        recordText.setOutlineThickness(3);
-        recordText.setOutlineColor(sf::Color(250, 149, 18));
         recordText.setFillColor(sf::Color::Black);
         std::string recordString = "RECORDS\n1. ";
         for (int i = 0; i < 9; i++) {
