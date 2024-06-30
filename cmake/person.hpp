@@ -149,7 +149,6 @@ public:
 		else manaSprite.setTexture(m10);		
 	}
 
-	
 	bool shift = false;
 	bool stop = false;
 

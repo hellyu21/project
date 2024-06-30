@@ -6,12 +6,14 @@ class Dop {
 	double x;
 	double y;
 	double time;
+	int type;
 	sf::Texture dop;
 	sf::Sprite sprite;
 public:
 	Dop() = default;
 
 	void Setup() {
+		type = rand() % (4 - 1 + 1) + 1;
 		x = rand() % (1420 - 100 + 1) + 100;
 		y = rand() % (800 - 100 + 1) + 100;
 		while (0 < x && x < 400 && 0 < y && y < 180 || 1420 < x && x < 1600 && 0 < y && y < 190) {
@@ -27,8 +29,11 @@ public:
 
 	~Dop() = default;
 
-	void Move(double time) {
-		y += sin(time)*0.05;
+	void Move(int type, double time) {
+		if (type==1){ y += sin(time) * 0.01; }
+		if (type == 2) { y += sin(time) * 0.025; }
+		if (type == 3) { y += sin(time) * 0.035; }
+		if (type == 4) { y += sin(time) * 0.06; }
 		sprite.setPosition(x, y);
 	}
 
@@ -46,6 +51,7 @@ public:
 	double Y() { return y; };
 
 	sf::Sprite Get() { return sprite; };
+	int dopTYPE() { return type; };
 };
 
 class Zat {

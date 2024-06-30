@@ -52,7 +52,7 @@ public:
    
     Game() { 
         srand(time(0));
-        window.create(sf::VideoMode(scx, scy), "Incredible adventure of a student!"/*, sf::Style::Titlebar*/);
+        window.create(sf::VideoMode(scx, scy), "Incredible adventure of a student!",sf::Style::None/*, sf::Style::Titlebar*/);
         state = menu;
     }
 
@@ -181,6 +181,13 @@ public:
            sf::Sprite frameback(framebackTexture);
            frameback.setPosition(-5, 5);
            window.draw(frameback);
+
+           sf::Texture cactus;
+           cactus.loadFromFile("sprites\\catcus.png");
+           sf::Sprite catcus(cactus);
+           catcus.setScale(0.5, 0.5);
+           catcus.setPosition(175, 450); 
+           window.draw(catcus); 
 
            //текст
            sf::Text chooseText;
@@ -735,12 +742,13 @@ public:
             }
 
             for (int i = 0; i < dopcount; i++) {
+                int typedop = dops[i].dopTYPE();
                 if (TouchDop(person, dops[i])) {
                     dops[i] = dops[dopcount-1];
                     dopcount--;
                     person.plusDop();
                 }
-                dops[i].Move(Time);
+                dops[i].Move(typedop,Time);
                 window.draw(dops[i].Get());
             }
             window.draw(person.getManaSprite());//отрисовка батареи
