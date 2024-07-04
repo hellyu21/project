@@ -11,7 +11,6 @@
 #include "person.hpp"
 #include "dop_za4et.hpp"
 
-
 int TouchBorder(Person& obj) {
     double x = obj.X();
     double y = obj.Y();
@@ -98,6 +97,15 @@ public:
         sf::Sprite background(backgroundMenuTexture);
         background.setScale(0.75, 0.75);
         window.draw(background);
+
+        //„ика и  ика
+        sf::Texture risunok; 
+        risunok.loadFromFile("sprites\\Chika&Kika.png");
+        sf::Sprite chikakika(risunok);
+        chikakika.setScale(3.5,3.5);
+        chikakika.setPosition(880, 250); 
+        window.draw(chikakika); 
+
 
         //текст
         sf::Text nameText; 

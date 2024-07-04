@@ -14,6 +14,8 @@ protected:
 	double currentBoostTime = boostTime;
 	double chargebat = 0.75;//скорость зарядки батарейки
 	double boostSpeed = 100;
+	bool shift = false;
+	bool stop = false;
 
 	int hearts = 3;
 	int dops = 0;
@@ -148,9 +150,6 @@ public:
 		else if (currentBoostTime < 4) manaSprite.setTexture(m8);
 		else manaSprite.setTexture(m10);		
 	}
-
-	bool shift = false;
-	bool stop = false;
 
 	void Update(double dt) {//ускорение+батарея
 		//ускорение
@@ -335,15 +334,11 @@ public:
 	//геттеры и сеттеры
 	double X() { return x; }
 	double Y() { return y; }
-
 	int DOPS() { return dops; }
 	int Hearts() { return hearts; }
-	sf::Sprite getManaSprite() {
-		return manaSprite;
-	}
+	sf::Sprite getManaSprite() {return manaSprite;}
 	void plusDop() { dops++; }
 	void Minusheart() { hearts--; }
-
 	void nullDop() {dops = 0;}
 	void nullHearts() { hearts = 3; }
 	void defSpeed() { speed = 200; }
@@ -368,7 +363,6 @@ public:
 		if (i == 3)
 			selectedCharacter = MV;
 	}
-
 	sf::Sprite Get(){ 
 		switch (selectedCharacter) {
 		case CHIKA:
