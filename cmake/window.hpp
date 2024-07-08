@@ -256,13 +256,13 @@ public:
             }
             else if (event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) 
             {
-                if (chika.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                if (chika.getGlobalBounds().contains(mousePos.x, mousePos.y) || num1.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
                     person.typeCharacter(1);
                     choosen = 1;
                     state = InGame;
                 }
-                else if (kika.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                else if (kika.getGlobalBounds().contains(mousePos.x, mousePos.y) || num2.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
                     person.typeCharacter(2);
                     choosen = 2;
